@@ -1,3 +1,7 @@
+playing	0
+believe	0
+mean 	0
+everything	0
 abandon	-2
 abandoned	-2
 abandons	-2
