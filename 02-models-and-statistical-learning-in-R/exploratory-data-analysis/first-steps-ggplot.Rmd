@@ -1,0 +1,269 @@
+---
+title: "First steps with ggplot2 library"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+options:
+  number_sections: yes
+---
+
+## Types of basic graphics and variant on `ggplot`
+
+### Scatterplots
+
+We load the `cars` dataset and plot it.
+```{r}
+data(cars)
+help(cars)
+head(cars)
+plot(cars)
+```
+
+
+Load the `ggplot` library for observing how it improves the R's basic graphics:
+```{r}
+
+# install.packages("ggplot2") # Install if it doesn't already be installed 
+library(ggplot2)
+
+ggplot(cars, aes(x=speed, y=dist)) + # It loads the data and set the variables
+  geom_point(shape=1) # It sets the points like hollow circles
+
+
+ggplot(cars, aes(x=speed, y=dist)) + 
+  geom_point(shape=1) +
+  geom_smooth(method=lm) # It adds a regression line with a confidence interval of 95%
+
+
+ggplot(cars, aes(x=speed, y=dist)) +
+  geom_point(shape=1) +
+  geom_smooth(method=lm, se=FALSE) # It adds a regression line without a confidence interval
+
+
+ggplot(cars, aes(x=speed, y=dist)) + 
+  geom_point(shape=1) +
+  geom_smooth() # It adds a smooth line above data and a confidence interval of 95%
+
+```
+
+
+
+More scatterplots
+
+```{r}
+# Load other data
+data(diamonds)
+help(diamonds)
+head(diamonds)
+str(diamonds)
+
+```
+
+```{r}
+ggplot(diamonds, aes(x=carat, y=price)) + 
+  geom_point() # If shape isn't specified, it adds filled circles
+
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point(shape=25, size=4) # We can specify the shape and size of points
+
+ggplot(diamonds, aes(x=carat, y=price, colour=cut)) + # Also, we can plot by a factor
+  geom_point(size=1.5)
+
+# Even, it can be plot with a gray scale by a value of continue atribute
+grayScale <- ggplot(diamonds, aes(x=carat, y=price))
+grayScale + geom_point(alpha=1)
+grayScale + geom_point(alpha=0.8)
+grayScale + geom_point(alpha=0.5)
+grayScale + geom_point(alpha=0.3)
+
+
+# Also, a scatterplot with bins can be do in coloured rectangles
+bin <- ggplot(diamonds, aes(x = carat, y = price))
+bin + stat_bin2d()
+```
+
+
+
+
+
+### Histograms
+
+We load `mpg` dataset. We plot a histogram with the highway consumption.
+```{r}
+data(mpg)
+help(mpg)
+head(mpg)
+hist(mpg$hwy)
+```
+
+
+`ggplot` histograms with options of density curve and setting of bin's number.
+
+```{r}
+ggplot(mpg, aes(x=hwy)) + 
+  geom_histogram(binwidth=3) # It sets the binwidth of each partition
+
+ggplot(mpg, aes(x=hwy)) +
+  geom_histogram(bins=30) # It sets the number of partitions
+
+ggplot(mpg, aes(x=hwy)) +
+  geom_histogram(binwidth=0.5, colour="red", fill="green") # Colour's options
+
+ggplot(mpg, aes(x=hwy)) +
+  geom_density(fill="yellow") # Plot a density curve
+
+# Histogram with a density curve
+ggplot(mpg, aes(x=hwy)) +
+  geom_histogram(aes(y=..density..), 
+                 binwidth=1.2,
+                 colour="black", fill="blue") +
+  geom_density(alpha=0.3, fill="red")
+  
+```
+
+
+Also, histograms can be represented with the variable divided respect of several categories. For it, we go to select two manufacturers: audi and volkswagen:
+
+```{r}
+mpg_subset <- mpg[mpg$manufacturer == "audi" | mpg$manufacturer == "volkswagen", ]
+str(mpg_subset)
+```
+
+
+```{r}
+# Overlapped histograms
+ggplot(mpg_subset, aes(x=hwy, fill=manufacturer)) + # With fill=manufacturer, we say that the histogram is filled with values of manufacturer
+  geom_histogram(binwidth=2, alpha=0.5, position="identity") # position="identity" -> overlap
+
+
+# Interlayer histograms
+ggplot(mpg_subset, aes(x=hwy, fill=manufacturer)) +
+  geom_histogram(binwidth=2, position="dodge") # position="dodge" -> interlayer
+
+
+# Density curves
+ggplot(mpg_subset, aes(x=hwy, fill=manufacturer)) +
+  geom_density()
+
+ggplot(mpg_subset, aes(x=hwy, fill=manufacturer)) +
+  geom_density(alpha=0.4)
+
+```
+
+
+
+More histograms and options
+```{r}
+# Histograms more sofisticated 
+set.seed(4235)
+diamonds_small <- diamonds[sample(nrow(diamonds), 1000), ] # Get a random small subset
+
+ggplot(diamonds_small, aes(x=price)) +
+  geom_histogram(binwidth=1000) # We see its histogram 
+
+
+ggplot(diamonds_small, aes(x=price, ..density.., colour=cut)) +
+  geom_freqpoly(binwidth=1000) # Show frequency polinomials with a colours by a factor (cut)
+
+ggplot(diamonds_small, aes(x=price, fill=cut)) +
+  geom_histogram(binwidth=1000) # Overlapped histograms with a colours by a factor (cut)
+
+ggplot(diamonds_small, aes(x=price, fill=cut)) +
+  geom_density(alpha=0.3) # Overlapped densisty curvers with a colours by a factor (cut)
+
+
+```
+
+
+
+
+### Gráficos de barras
+
+Cargamos un dataset de propinas para observar su distribución
+
+```{r}
+# install.packages("reshape2")
+library(reshape2)
+data(tips)
+help(tips)
+head(tips)
+```
+
+```{r}
+# gráfico de barras básico de factura total respecto a hora del día
+# se consume más en el almuerzo que en la cena
+ggplot(data=tips, aes(x=time, y=total_bill)) +
+    geom_bar(stat="identity")
+
+# pintamos la anterior gráfica de barras según la categoría fumador
+ggplot(data=tips, aes(x=time, y=total_bill, fill=smoker)) +
+    geom_bar(stat="identity")
+
+```
+
+Se puede observar que el viernes es cuando cada mesa paga más en media.
+```{r}
+#cuenta de clientes por día
+ggplot(data=tips, aes(x=day)) +
+    geom_bar(stat="count") 
+
+#cuenta de media de  facturas por día
+ggplot(data=tips, aes(x=day, y=total_bill)) +
+    geom_bar(stat = "summary", fun.y = "mean") 
+```
+
+
+
+
+
+
+
+### Gráficos de factor con barras de error
+
+Son gráficos parecidos a los de barras pero con líneas que unen puntos. Cargamos un dataset de crecimiento de dientes en cerdos guineanos.
+
+```{r}
+data(ToothGrowth)
+help("ToothGrowth")
+head(ToothGrowth)
+tg <- ToothGrowth
+```
+Realizamos un sumario de las variables que nos permite realizar representaciones con márgenes de confianza:
+```{r}
+# install.packages("Rmisc")
+library(Rmisc)
+tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
+tgc
+```
+
+Hacemos gráficas de factor. Podemos observar la diferencia de aplicar al cerdo un supemento u otro. Las barras verticales son intervalos de confianza al 95% de los valores de longitud del diente según la cantidad de dosis aportada en cada suplemeneto.
+
+```{r}
+# factor plot con error bars
+ggplot(tgc, aes(x=dose, y=len, colour=supp)) + 
+    geom_errorbar(aes(ymin=len-se, ymax=len+se), width=.1) +
+    geom_line() +
+    geom_point()
+
+# observamos cómo quedaría esta gráfica según propinas por día 
+ggplot(tips, aes(x=day, y=tip, colour="red")) + 
+    geom_line() +
+    geom_point()
+```
+
+
+
+
+### Gráficos de caja ó *boxplot*
+
+```{r}
+p <- ggplot(diamonds, aes(cut, price))
+p + geom_boxplot()
+
+#propina en función de día
+#el domingo pagan más en media pero el sábado hay más gente optimista con propinas altas
+ggplot(tips, aes(day, tip)) +  geom_boxplot() + coord_flip()
+```
+
+
