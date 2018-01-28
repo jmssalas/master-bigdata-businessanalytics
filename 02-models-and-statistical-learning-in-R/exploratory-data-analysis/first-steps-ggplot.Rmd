@@ -8,7 +8,7 @@ options:
   number_sections: yes
 ---
 
-## Types of basic graphics and variant on `ggplot`
+## Types of basic charts and variant on `ggplot`
 
 ### Scatterplots
 
@@ -21,7 +21,7 @@ plot(cars)
 ```
 
 
-Load the `ggplot` library for observing how it improves the R's basic graphics:
+Load the `ggplot` library for observing how it improves the R's basic charts:
 ```{r}
 
 # install.packages("ggplot2") # Install if it doesn't already be installed 
@@ -162,7 +162,6 @@ diamonds_small <- diamonds[sample(nrow(diamonds), 1000), ] # Get a random small 
 ggplot(diamonds_small, aes(x=price)) +
   geom_histogram(binwidth=1000) # We see its histogram 
 
-
 ggplot(diamonds_small, aes(x=price, ..density.., colour=cut)) +
   geom_freqpoly(binwidth=1000) # Show frequency polinomials with a colours by a factor (cut)
 
@@ -172,15 +171,14 @@ ggplot(diamonds_small, aes(x=price, fill=cut)) +
 ggplot(diamonds_small, aes(x=price, fill=cut)) +
   geom_density(alpha=0.3) # Overlapped densisty curvers with a colours by a factor (cut)
 
-
 ```
 
 
 
 
-### Gráficos de barras
+### Bar charts
 
-Cargamos un dataset de propinas para observar su distribución
+We load a tips dataset to observ its distribution
 
 ```{r}
 # install.packages("reshape2")
@@ -191,26 +189,26 @@ head(tips)
 ```
 
 ```{r}
-# gráfico de barras básico de factura total respecto a hora del día
-# se consume más en el almuerzo que en la cena
+# Basic bar chart of total bill respect of day time
+# We can observe that at dinner, the total bill is more expensive than at lunch
 ggplot(data=tips, aes(x=time, y=total_bill)) +
-    geom_bar(stat="identity")
+  geom_bar(stat="identity") 
 
-# pintamos la anterior gráfica de barras según la categoría fumador
+# We plot the last bar chart by smoker
 ggplot(data=tips, aes(x=time, y=total_bill, fill=smoker)) +
-    geom_bar(stat="identity")
+  geom_bar(stat="identity")
 
 ```
 
-Se puede observar que el viernes es cuando cada mesa paga más en media.
+It can be observed that sunday is when the tables pay more of mean.
 ```{r}
-#cuenta de clientes por día
+# Count of clients by day
 ggplot(data=tips, aes(x=day)) +
     geom_bar(stat="count") 
 
-#cuenta de media de  facturas por día
+# Mean count of bills by day
 ggplot(data=tips, aes(x=day, y=total_bill)) +
-    geom_bar(stat = "summary", fun.y = "mean") 
+    geom_bar(stat = "summary", fun.y = "mean") # fun.y="mean" applies the function "mean" on Y axe
 ```
 
 
@@ -219,51 +217,58 @@ ggplot(data=tips, aes(x=day, y=total_bill)) +
 
 
 
-### Gráficos de factor con barras de error
+### Factor charts with error bars
 
-Son gráficos parecidos a los de barras pero con líneas que unen puntos. Cargamos un dataset de crecimiento de dientes en cerdos guineanos.
+This charts are same bar charts, but with lines which connects points. We load a dataset of tooth growth on guinea pings.
 
 ```{r}
 data(ToothGrowth)
-help("ToothGrowth")
+help(ToothGrowth)
 head(ToothGrowth)
 tg <- ToothGrowth
 ```
-Realizamos un sumario de las variables que nos permite realizar representaciones con márgenes de confianza:
+
+We do a variables summary which allows us to realize displays with confidence margins:
+
 ```{r}
 # install.packages("Rmisc")
 library(Rmisc)
-tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose"))
+tgc <- summarySE(tg, measurevar="len", groupvars=c("supp","dose")) 
+# measurevar="len" -> variable of measure: "len", groupvars=c("supp","dose") -> variables to group: "supp", "dose".
 tgc
 ```
 
-Hacemos gráficas de factor. Podemos observar la diferencia de aplicar al cerdo un supemento u otro. Las barras verticales son intervalos de confianza al 95% de los valores de longitud del diente según la cantidad de dosis aportada en cada suplemeneto.
+We do factor charts. We can observe the difference to apply a supplement or another supplement to pig. The vertical bars are confidence intervals of 95% of the tooth length values according to the amount of dose contributed in each supplement.
 
 ```{r}
-# factor plot con error bars
-ggplot(tgc, aes(x=dose, y=len, colour=supp)) + 
-    geom_errorbar(aes(ymin=len-se, ymax=len+se), width=.1) +
-    geom_line() +
-    geom_point()
+# Factor chart with error bars
+ggplot(tgc, aes(x=dose, y=len, colour=supp)) +
+  geom_errorbar(aes(ymin=len-se, ymax=len+se), width=0.1) + # It adds a error bars with ymin and ymax like len-se (standard error) len+se
+  geom_line() + # It adds a line 
+  geom_point() # It adds a points
 
-# observamos cómo quedaría esta gráfica según propinas por día 
-ggplot(tips, aes(x=day, y=tip, colour="red")) + 
-    geom_line() +
-    geom_point()
+# We observe how would be this chart according to tips by day
+ggplot(tips, aes(x=day, y=tip, colour="red")) +
+  geom_line() +
+  geom_point()
+
 ```
 
 
 
 
-### Gráficos de caja ó *boxplot*
+### Boxplot charts 
 
 ```{r}
-p <- ggplot(diamonds, aes(cut, price))
-p + geom_boxplot()
+# We do the boxplot chart with diamonds dataset
+ggplot(diamonds, aes(cut, price)) + 
+  geom_boxplot()
 
-#propina en función de día
-#el domingo pagan más en media pero el sábado hay más gente optimista con propinas altas
-ggplot(tips, aes(day, tip)) +  geom_boxplot() + coord_flip()
+# Boxplot with the tips by day
+# We can observe that the sunday they pay more of mean, but the saturday there are more people with higher tips
+ggplot(tips, aes(day, tip)) +  
+  geom_boxplot() + 
+  coord_flip() # It flips the axes
 ```
 
 
