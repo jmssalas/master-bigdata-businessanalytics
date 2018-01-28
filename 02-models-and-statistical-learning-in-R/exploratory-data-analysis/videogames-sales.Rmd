@@ -1,0 +1,133 @@
+---
+title: "UD2 N03"
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document: default
+---
+# Análisis exploratorio de dataset sobre ventas de videojuegos
+
+Cargamos un dataset de venta de videojuegos para realizar representaciones, agrupaciones y sumarios descriptivos que puedan arrojar una intuición sobre la información contenida en los datos. En concreto buscamos saber:
+
+- Comparar las ventas entre regiones. Observar relaciones y modelos de influencia entre las mismas.
+- Ver qué géneros son más populares en regiones y han cambiado a lo largo del tiempo significativamente.
+- El alzamiento y caída de diferentes plataformas a lo largo de los años.
+
+```{r}
+df <- read.csv('vgsales.csv')
+df$Year <- ordered(df$Year)
+df <- df[df$Year<2017,]
+head(df)
+str(df)
+summary(df)
+```
+
+# Correlación de variables de ventas globales
+
+Analizamos las variables de ventas, primero observamos qué proporción suponen las ventas respecto al mercado global:
+```{r}
+num_Sales <- df[,c("NA_Sales","EU_Sales","JP_Sales","Other_Sales","Global_Sales")]
+apply(num_Sales,2,sum)/sum(df$Global_Sales)*100
+
+```
+Se observa que las ventas globales están fuertemente ligadas con NA > EU > Other > JP. El mercado japonés tiene una menor dependencia con el global, esto podría apuntar a características distintas en preferencias, publishers y tipos de juegos.
+
+# Diferencia en preferencias de mercado en Japón respecto a otros países por fecha:
+```{r}
+library(dplyr)
+top_genre_year_global <- df %>% 
+         group_by(Year, Genre) %>% 
+         summarize(Revenue = sum(Global_Sales)) %>%
+         top_n(1)
+
+top_genre_year_JP <- df %>% 
+         group_by(Year, Genre) %>% 
+         summarize(Revenue = sum(JP_Sales)) %>%
+         top_n(1)
+
+top_genre_year_global
+top_genre_year_JP
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(top_genre_year_global, aes(Year, Revenue, fill = Genre)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Top Genre by Revenue each Year in global") +
+    theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4),legend.position = "top")
+
+ggplot(top_genre_year_JP, aes(Year, Revenue, fill = Genre)) + 
+  geom_bar(stat = "identity") +
+  ggtitle("Top Genre by Revenue each Year in global") +
+    theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4),legend.position = "top")
+
+```
+
+Observamos que la preferencia en género de videojuego en Japón es por los juegos de rol mientras que globalmente es por los de acción. Esto es una característica cualitativa diferenciadora de este mercado respecto al global.
+
+Realizamos un contraste Chi Cuadrado de bondad de ajuste de dinero en ventas en cada género con las combinaciones:
+- EU vs NA
+- EU vs JP
+- JP vs NA
+
+Agrupamos desde 2008 que es el último cambio de la serie y hacemos contrastes:
+```{r}
+
+
+EU_gen <- df[df$Year>=2008,] %>% group_by(Genre) %>% 
+         summarize(Revenue = sum(EU_Sales))
+NA_gen <- df[df$Year>=2008,] %>% group_by(Genre) %>% 
+         summarize(Revenue = sum(NA_Sales))
+JP_gen <- df[df$Year>=2008,] %>% group_by(Genre) %>% 
+         summarize(Revenue = sum(JP_Sales))
+Global_gen <- df[df$Year>=2008,] %>% group_by(Genre) %>% 
+         summarize(Revenue = sum(Global_Sales))
+Other_gen <- df[df$Year>=2008,] %>% group_by(Genre) %>% 
+         summarize(Revenue = sum(Other_Sales))
+
+NA_gen
+EU_gen
+
+ggplot(EU_gen,aes(x=Genre,y=Revenue))+geom_bar(stat='identity')+ ggtitle("Genre of Games Purchased in EU")+ylab("In Millions")+theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4))
+ggplot(NA_gen,aes(x=Genre,y=Revenue))+geom_bar(stat='identity')+ ggtitle("Genre of Games Purchased in NA")+ylab("In Millions")+theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4))
+ggplot(JP_gen,aes(x=Genre,y=Revenue))+geom_bar(stat='identity')+ ggtitle("Genre of Games Purchased in Japan")+ylab("In Millions")+theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4))
+ggplot(Other_gen,aes(x=Genre,y=Revenue))+geom_bar(stat='identity')+ ggtitle("Genre of Games Purchased in Other")+ylab("In Millions")+theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4))
+
+
+```
+
+# Evolución de las ventas por región
+
+```{r}
+#videos$Year <- factor(videos$Year,levels=c(1980:2015))
+na <- df %>% select(Year,NA_Sales) %>% group_by(Year) %>% summarise(s=sum(NA_Sales))
+
+eu <- df %>% select(Year,EU_Sales) %>% group_by(Year) %>% summarise(s=sum(EU_Sales))
+
+jp <- df %>% select(Year,JP_Sales) %>%group_by(Year) %>% summarise(s=sum(JP_Sales))
+
+oth <- df %>% select(Year,Other_Sales) %>% group_by(Year) %>% summarise(s=sum(Other_Sales))
+
+data_sales <- data.frame(year = c(1980:2016),oth$s,jp$s,eu$s,na$s)
+ggplot(data_sales, aes((year))) + 
+  geom_line(aes(y = na$s , colour = "NA_Sales"),size=1) + 
+  geom_line(aes(y = eu$s, colour = "EU_Sales"),size=1)+
+  geom_line(aes(y= jp$s ,colour='JP_Sales'),size=1)+
+  geom_line(aes(y=oth$s,colour='Other_Sales'),size=1)+ylab('Count in Millions')+
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20))+
+  ggtitle("Evolución de ventas a lo largo del tiempo") +
+    theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4),legend.position = "top")
+```
+
+Se observa una dominación en las ventas por parte de NA entre 2000 y 2010, A partir de 2008 y coincidiendo con la crisis global económica, hay una caída fuerte en todas las regiones y la dominación cesa.
+
+Hay por lo tanto  puntos críticos en la evolución de las ventas en 1995, 2000 y 2008 (se podría indagar qué motivos forzaron los cambios en las fechas previas no comentadas). 
+
+A su vez se observa que la serie NA y EU están fuertemente ligadas.
+
+
+
+
+
+
