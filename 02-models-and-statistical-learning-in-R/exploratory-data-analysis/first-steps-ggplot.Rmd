@@ -1,11 +1,10 @@
 ---
 title: "First steps with ggplot2 library"
 output:
-  html_document: default
+  html_document:
+    theme: flatly
   html_notebook: default
   pdf_document: default
-options:
-  number_sections: yes
 ---
 
 ## Types of basic charts and variant on `ggplot`
