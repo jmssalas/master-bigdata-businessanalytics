@@ -3,7 +3,8 @@ title: "Exploratory analysis of videogames sales dataset"
 output:
   html_document:
     theme: flatly
-  html_notebook: default
+  html_notebook: 
+    theme: flatly
   pdf_document: default
 ---
 
@@ -13,4 +14,193 @@ We load a videogames sales dataset for doing displays, groups and descriptive su
 - To see what genres are more populars in regions and have changed over time significantly.
 - The uprising and downrising the differents platform over time.
 
-## 
+
+
+### First, let's study the dataset
+
+We load data and show its information:
+```{r}
+data <- read.csv("./data/videogames-sales-data.csv")
+head(data)
+```
+ 
+We are only going to use the data before the year 2017:
+```{r}
+data$Year <- ordered(data$Year) # For that, we make the data$Year like ordered factor
+data <- data[data$Year < 2017, ] # Data before 2017
+max(data$Year) # Check the maximum
+min(data$Year) # Check the minimum
+```
+
+We see the data summary:
+```{r}
+summary(data)
+```
+
+
+
+### Second, let's see the correlation of variables of the global sales
+
+We analyze the sales variables, first, we observe what percentage of the global sales represent the local sales:
+```{r}
+num_sales <- data[, c("NA_Sales", "EU_Sales", "JP_Sales", "Other_Sales", "Global_Sales")] # We take only the column sales
+head(num_sales) # We show it
+apply(X = num_sales, MARGIN = 2, FUN = sum) / sum(num_sales$Global_Sales) * 100 # We calculate the percentage
+```
+
+It is observed that the global sales are strongly linked to NA > EU > JP. This suppose that the JP sales are weakly linked to the global sales. Let's see what is the reason:
+
+
+### Difference in Genre preferences of JP market with respect to Global market
+
+We load the necessary libraries:
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+# We get the top genre reveune by year of JP sales
+top_genre_year_JP <- data %>%
+                        group_by(Year, Genre) %>%
+                        summarize(Reveune = sum(JP_Sales)) %>%
+                        top_n(1)
+
+# We get the top genre reveune by year of Global sales
+top_genre_year_Global <- data %>%
+                        group_by(Year, Genre) %>%
+                        summarize(Reveune = sum(Global_Sales)) %>%
+                        top_n(1)
+
+head(top_genre_year_JP)
+head(top_genre_year_Global)
+```
+
+
+We plot the data of JP and Global sales, for seeing its distribution by genre reveune each year:
+```{r}
+ggplot(top_genre_year_Global, aes(x = Year, y = Reveune, fill = Genre)) +
+  geom_bar(stat = "identity") + 
+  ggtitle("Top Genre by Reveune each year in Global") +
+  theme(axis.text.x = element_text(angle = 90))
+
+ggplot(top_genre_year_JP, aes(x = Year, y = Reveune, fill = Genre)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Top Genre by Reveune each year in JP") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+We can observe that the preferences in JP market is on the role games, while in Global market, the preferences is on the action games. This is a qualitative difference between JP and Global market. Now, we are going to do zoom in the concrete markets as for 2008, which it is the year of the last genre change in the global market.
+
+#### Zoom in the concrete markets as for 2008
+
+We take the data after 2008:
+```{r}
+zoom_data <- data[data$Year >= 2008, ]
+max(zoom_data$Year)
+min(zoom_data$Year)
+```
+
+We group by Genre for each market:
+```{r}
+NA_genre <- zoom_data %>%
+              group_by(Genre) %>%
+              summarize(Reveune = sum(NA_Sales))
+
+EU_genre <- zoom_data %>%
+              group_by(Genre) %>%
+              summarize(Reveune = sum(EU_Sales))
+
+JP_genre <- zoom_data %>%
+              group_by(Genre) %>%
+              summarize(Reveune = sum(JP_Sales))
+
+Others_genre <- zoom_data %>%
+                  group_by(Genre) %>%
+                  summarize(Reveune = sum(Other_Sales))
+
+Global_genre <- zoom_data %>%
+                  group_by(Genre) %>%
+                  summarize(Reveune = sum(Global_Sales))
+
+head(NA_genre)
+head(EU_genre)
+head(JP_genre)
+head(Others_genre)
+head(Global_genre)
+```
+
+Now, we plot the calculated data:
+
+```{r}
+ggplot(NA_genre, aes(x = Genre, y = Reveune)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Reveune by Genre on NA market") +
+  theme(axis.text.x = element_text(angle = 45))
+
+ggplot(EU_genre, aes(x = Genre, y = Reveune)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Reveune by Genre on EU market") +
+  theme(axis.text.x = element_text(angle = 45))
+
+ggplot(JP_genre, aes(x = Genre, y = Reveune)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Reveune by Genre on JP market") +
+  theme(axis.text.x = element_text(angle = 45))
+
+ggplot(Others_genre, aes(x = Genre, y = Reveune)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Reveune by Genre on Others market") +
+  theme(axis.text.x = element_text(angle = 45))
+
+ggplot(Global_genre, aes(x = Genre, y = Reveune)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Reveune by Genre on Global market") +
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+We can observe that in all markets (excepting JP), the leader genre is Action, like we have observed before. 
+
+
+### Third, let's see the sales evolution of the markets over time
+
+We get the all sales by year for each market: 
+```{r}
+NA_evolution <- data %>%
+                group_by(Year) %>%
+                summarize(Reveune = sum(NA_Sales))
+
+EU_evolution <- data %>%
+                group_by(Year) %>%
+                summarize(Reveune = sum(EU_Sales))
+
+JP_evolution <- data %>%
+                group_by(Year) %>%
+                summarize(Reveune = sum(JP_Sales))
+
+Other_evolution <- data %>%
+                group_by(Year) %>%
+                summarize(Reveune = sum(Other_Sales))
+
+Global_evolution <- data %>%
+                group_by(Year) %>%
+                summarize(Reveune = sum(Global_Sales))
+
+sales_evolution <- data.frame(Year = c(1980:2016), NA_Sales = NA_evolution$Reveune, EU_Sales = EU_evolution$Reveune, JP_Sales = JP_evolution$Reveune, Other_Sales = Other_evolution$Reveune, Global_Sales = Global_evolution$Reveune)
+sales_evolution
+```
+
+We plot the sales evolution:
+```{r}
+ggplot(sales_evolution, aes(x = Year)) + 
+  geom_line(aes(y = NA_evolution$Reveune, colour = "NA_Sales"), size=1) + 
+  geom_line(aes(y = EU_evolution$Reveune, colour = "EU_Sales"), size=1) +
+  geom_line(aes(y = JP_evolution$Reveune, colour = "JP_Sales"), size=1) +
+  geom_line(aes(y = Other_evolution$Reveune, colour = "Other_Sales"), size=1) +
+  ylab('Count in Millions') +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20))+
+  ggtitle("Sales evolution over time") +
+    theme(axis.text.x = element_text(angle = 90, size = 10, vjust = 0.4))
+```
+
+It is observed that between the years 2000 and 2010, the NA sales dominated and that as of 2008 (coindice with the global crisis) this domination decreases. Also, we can observe that the NA sales are strongly linked with teh Global sales, like we have can observe in the begining of this notebook.
