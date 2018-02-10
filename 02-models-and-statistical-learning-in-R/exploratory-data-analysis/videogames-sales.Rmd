@@ -1,10 +1,8 @@
 ---
 title: "Exploratory analysis of videogames sales dataset"
 output:
-  html_document:
-    theme: flatly
-  html_notebook: 
-    theme: flatly
+  html_notebook: default
+  html_document: default
   pdf_document: default
 ---
 

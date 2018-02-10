@@ -2,8 +2,7 @@
 title: "First steps with ggplot2 library"
 output:
   html_notebook: default
-  html_document:
-    theme: flatly
+  html_document: default
   pdf_document: default
 ---
 
