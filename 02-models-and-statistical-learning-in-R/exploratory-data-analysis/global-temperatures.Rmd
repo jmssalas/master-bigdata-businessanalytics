@@ -1,0 +1,196 @@
+---
+title: "Exploratory analysis climatics data"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+We make a graphic study of the global temperature evolution from 1850. We want to know:
+
+- If there have been a important increasing of global temperature .
+- If it is produced more anomalies than before, thermally.
+- To take ideas and descriptors as for the given information.
+
+Data are global temperatures and are described like:
+
+- Date: starts in 1750 for average land temperature and 1850 for max and min land temperatures and global ocean and land temperatures
+- LandAverageTemperature: global average land temperature in celsius
+- LandAverageTemperatureUncertainty: the 95% confidence interval around the average
+- LandMaxTemperature: global average maximum land temperature in celsius
+- LandMaxTemperatureUncertainty: the 95% confidence interval around the maximum land temperature
+- LandMinTemperature: global average minimum land temperature in celsius
+- LandMinTemperatureUncertainty: the 95% confidence interval around the minimum land temperature
+- LandAndOceanAverageTemperature: global average land and ocean temperature in celsius
+- LandAndOceanAverageTemperatureUncertainty: the 95% confidence interval around the global average land and ocean temperature
+
+
+
+### Let's study the dataset
+
+We load data and show its information:
+```{r}
+data <- read.csv("./data/global-temperatures-data.csv")
+head(data)
+```
+
+Like we can observe, data contains missing values (`NA`). For this, we are going to remove all rows which contains missing values:
+```{r}
+data <- na.omit(data)
+head(data)
+```
+
+Let's see how the columns data are:
+```{r}
+str(data)
+```
+
+The date of data are factor, therefore, we are going to convert this factor to date:
+```{r}
+data$dt <- as.Date(data$dt, "%Y-%m-%d")
+str(data)
+```
+
+Now, we extract the month and year from date and we add it to data:
+```{r}
+data$Month <- format(data$dt, "%m")
+data$Month.String <- format(data$dt, "%B")
+data$Year <- format(data$dt, "%Y")
+head(data)
+```
+
+
+### Let's represent the average temperatures by month from 1850
+
+```{r}
+# Load the necessary libraries:
+library(ggplot2)
+library(dplyr)
+
+# Represent the average temperatures
+ggplot(data, aes(x = dt, y = LandAverageTemperature, colour = reorder(Month.String, -LandAverageTemperature, mean))) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Land Average Temperature by month", x = "Year", y = "Temperature", colour = "Month")
+
+ggplot(data, aes(x = dt, y = LandAndOceanAverageTemperature, colour = reorder(Month.String, -LandAndOceanAverageTemperature, mean))) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Land and Ocean Average Temperature by month", x = "Year", y = "Temperature", colour = "Month")
+```
+
+It is observed that while the land average temperature has increased smoothly, the land and ocean average temperature has increased more sharply.
+
+
+
+### Let's represent the differences between the land maximum and minimum temperatures
+
+First, we are going to the maximum and minimum temperatures evolution over time:
+```{r}
+# Let's represent the mean of maximum temperatures by year
+max_by_year <- data %>%
+                filter(Year >= 1850) %>%
+                group_by(Year) %>%
+                summarize(Temperature = mean(LandMaxTemperature))
+
+ggplot(max_by_year, aes(x = Year, y = Temperature, colour = Temperature)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  ggtitle("Max temperatures of the land by year") +
+  scale_colour_gradient(low = "blue", high = "red") +
+  scale_x_discrete(breaks = scales::pretty_breaks(n = 10))
+```
+
+
+```{r}
+# Let's represent the mean of minimum temperatures by year
+min_by_year <- data %>%
+                filter(Year >= 1850) %>%
+                group_by(Year) %>%
+                summarize(Temperature = mean(LandMinTemperature))
+
+ggplot(min_by_year, aes(x = Year, y = Temperature, colour = Temperature)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  ggtitle("Min temperatures of the land by year") +
+  scale_colour_gradient(low = "blue", high = "red") +
+  scale_x_discrete(breaks = scales::pretty_breaks(n = 10))
+```
+
+We can observe that as the maximum as the minimum temperatures have increased 3ºC from 1850.
+
+
+Now, we are going to observe the difference between maximum and minimum temperatures:
+```{r}
+# We add a new column with differences between maximum and minimum temperatures:
+data$MaxMinLandDifferences <- data$LandMaxTemperature - data$LandMinTemperature
+
+ggplot(data, aes(x = dt, y = MaxMinLandDifferences, colour = MaxMinLandDifferences)) + 
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(title = "Differences between maximum and minimum temperatures", 
+       x = "Year", 
+       y = "Differences",
+       colour = "Differences")
+```
+
+Also, we are going to observe this difference by quarter evolution:
+```{r}
+# We add a new colum with quarter of year:
+data$Quarter <- quarters(data$dt)
+
+# We represent the difference by quarter:
+ggplot(data, aes(x = dt, y = MaxMinLandDifferences, color = reorder(Quarter, -MaxMinLandDifferences, mean))) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Differences between maximum and minimum temperatures by quarter",
+       x = "Year",
+       y = "Difference",
+       colour = "Quarter")
+```
+
+Like we can observe, over time it is not seem a difference in evolution of the differences between the land maximum and minimum temperatures and either throught the quarters.
+
+
+
+### Let's see the evolution of uncertainty above the land and the ocean temperatures
+
+```{r}
+head(data)
+ggplot(data, aes(x = dt, y = LandAndOceanAverageTemperatureUncertainty, colour = LandAndOceanAverageTemperatureUncertainty)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_color_gradient() +
+  labs(title = "Average of uncertainty above the land and the ocean temperatures over time",
+       x = "Year",
+       color = "")
+```
+
+With this, we can observe how the uncertainty of temperatures has been decreasing over time. This means that the measurements have improve a lot.
+
+
+
+### Let's see the land and the ocean temperature distribution throught the year
+
+We are going to represent data with boxplot chart:
+```{r}
+ggplot(data, aes(x = Month, y = LandAndOceanAverageTemperature)) +
+  geom_boxplot(fill = "gray")
+```
+
+With this, we can observe that almost all months have the same anomalies or outliers, both above and below.
+
+
+Now, we are going to represent the temperatures distribution by month throught the selected years:
+
+```{r}
+selected_years <- data[data$Year %in% c(1850, 1900, 1950, 2000, 2005), ]
+
+ggplot(selected_years, aes(x = Month, y = LandAndOceanAverageTemperature, colour = reorder(Year, -LandAndOceanAverageTemperature, mean))) +
+  geom_point() +
+  scale_color_discrete("") +
+  labs(title = "Average temperature in the land and the ocean by month of selected years",
+       x = "Month",
+       y = "Average temperature")
+```
