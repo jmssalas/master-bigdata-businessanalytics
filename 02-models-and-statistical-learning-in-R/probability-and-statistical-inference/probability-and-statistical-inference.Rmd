@@ -1,0 +1,140 @@
+---
+title: "Probability and Statistical Inference"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+
+### Section A
+
+We have the IQ of a sample of 5 subjects:
+ 110
+ 100
+ 115
+ 105
+ 104
+
+We want to:
+  
+  - Case 1: Calculate the confidence interval above the mean (95%).
+  
+```{r}
+iq <- c(110,100,115,105,104)
+# Calculate the confidence interval
+t.test(iq)
+```
+  
+  The confidence interval (95%) is: [99.59193, 114.00807].
+    
+  \newline
+    
+  - Case 2: Indicate if this subjects have been extracted of a population with mean = 100.
+    
+```{r}
+# Calculate if the mean is equal to 100
+t.test(iq, mu=100, conf.level = 0.99)
+```
+
+  As the `p-value > 0.05`, then it is supossed that the subjects's population has mean = 100.
+
+
+
+### Section B
+
+With the dataset `survey`, we want to contrast if the pulse difference between men and women is different or not. Could it considered that the women pulse is higher than the men pulse with a confidence level of 90%?
+
+```{r}
+library(MASS)
+head(survey)
+```
+
+The dataset contains `NA` values. We omit them:
+```{r}
+data <- na.omit(survey)
+
+# Let's see the difference in means:
+t.test(Pulse ~ Sex, data, conf.level = 0.9)
+t.test(Pulse ~ Sex, data, alternative = "g", conf.level = 0.90)
+```
+
+With these results, the difference between the pulse mean of both sex is not 0 and either greater 0. Therefore, we cannot say if the women pulse is greater than the men pulse.
+
+
+
+### Section C
+
+**Ley de Benford**
+The Xdata company has sent me a bills which seem to be false. These bills has a lot of numbers which does not seem to generated with a natural mode. We check if this bill is generated artificially with the Benford law (https://es.wikipedia.org/wiki/Ley_de_Benford). The Benford law sets that the natural distribution of the first digits is:
+
+      0.301,0.176,0.125,0.097,0.079,0.067,0.058,0.051,0.046
+
+The frequencies of the first digits of the company bills are:
+
+      7, 13, 12,  9,  9, 13, 11, 10, 16
+
+¿Are the bills falses?
+
+```{r}
+# Probabilities of the first digits (Benford)
+prob <- c(0.301,0.176,0.125,0.097,0.079,0.067,0.058,0.051,0.046)
+# Frequencies of the first digits (Xdata bills)
+freq <- c(7, 13, 12,  9,  9, 13, 11, 10, 16)
+
+# Check if they are dependients with probabilities
+chisq.test(freq, p = prob)
+```
+
+As the `p-value < 0.05`, the distributions cannot be considered the same. Thus, the bills do not comply with Benford law and are potentially falses.
+
+
+
+
+
+### Section D
+
+With this dataset:
+```{r}
+data("PlantGrowth")
+PlantGrowth
+```
+
+  - Could it considered that with the three treatments, the plants have the same growth?
+```{r}
+# We are going to a exploratory analysis for seeing its behaviour:
+library(ggplot2)
+ggplot(PlantGrowth, aes(x = group, y = weight)) +
+  geom_boxplot()
+
+ggplot(PlantGrowth, aes(x = weight, fill = group)) +
+  geom_histogram()
+```
+  
+  As we can see, the three treatments have not the same growth above the plants.
+  
+  - Make the one-way ANOVA. What could conclusions infer of this way?
+  
+  Let's see if the groups are not equals
+```{r}
+oneway.test(weight ~ group, PlantGrowth)
+```
+
+  As the groups are not equals, let's see if there is any difference between `ctrl` and `trt1` treatments
+```{r}
+ctrl_trt1 <- PlantGrowth[PlantGrowth$group != "trt2", ]
+ctrl_trt1
+oneway.test(weight ~ group, ctrl_trt1)
+```
+
+With this result, we can say that the `ctrl` and `trt1` are the same. We are going to make it sure.
+
+```{r}
+new_data <- PlantGrowth
+new_data[new_data$group == "ctrl", "group"] <- "trt1"
+new_data
+oneway.test(weight ~ group, new_data)
+```
+
+With this: `p-value < 0.05`, we make sure that there are only two treatments: `trt1` and `trt2`.
