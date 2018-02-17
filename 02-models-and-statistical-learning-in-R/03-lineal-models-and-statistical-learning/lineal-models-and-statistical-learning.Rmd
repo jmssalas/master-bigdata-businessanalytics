@@ -1,0 +1,141 @@
+---
+title: "Lineal Models and Statistical Learning"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+### Section A: Does IQ depend of the physical measures?
+
+Load the `iqphys.csv` and make a multiple lineal regression. This data contains:
+
+  - Response (y): Performance IQ scores (PIQ) from the revised Wechsler Adult Intelligence Scale. This variable served as the investigator’s measure of the individual’s intelligence.
+  - Potential predictor (x1): Brain size based on the count obtained from MRI scans (given as count/10,000).
+  - Potential predictor (x2): Height in inches.
+  - Potential predictor (x3): Weight in pounds.
+
+```{r}
+data <- read.csv("data/iqphys.csv")
+head(data)
+```
+
+
+##### **- What predictor explain something about the IQ variability?** 
+
+We are going to make a pairs plot for seeing how are the predictors with the IQ.
+
+```{r}
+pairs(data)
+```
+
+Like we can observe, only the `Brain` predictor has a correlation with `PIQ`. We are going to train a lineal model for seeing this result.
+
+```{r}
+model <- lm(PIQ ~ ., data = data)
+summary(model)
+```
+
+This result gives us the reason, only the `Brain` is the significant predictor, althought the `Height` too (in lower measure). In addition, the model has a poor $R^2$ that means that `PIQ` is not good explained by the predictors. Due to this result, our model will be without `Weight` predictor:
+
+```{r}
+model <- lm(PIQ ~ Brain + Height, data = data)
+summary(model)
+```
+
+
+##### **- Provide a confidence interval for the coefficients.**
+
+The confidence interval for the coefficients of model is:
+```{r}
+confint(model)
+```
+
+##### - What is the confidence interval of IQ for the values of the predictors: 95, 70 and 180? 
+
+As we have removed the `Weight` predictor, we will only use the data: `Brain = 95` and `Height = 70`:
+```{r}
+newdata <- data.frame(Brain = 95, Height = 70)
+predict(model, newdata, interval = "prediction")
+```
+
+The size of the confidence interval is very big, this is due to there are few data and the model is bad.
+
+
+
+##### **- Do the residuals follow a normal distribution? Make the convenients representations of the histogram and Q-Q chart.**
+
+We are going to make the convenients representations for knowing if the residuals follow a normal distribution:
+```{r}
+par(mfrow=c(1,2))
+hist(model$residuals)
+qqnorm(model$residuals)
+qqline(model$residuals)
+```
+
+Also, we can plot the model with:
+```{r}
+plot(model)
+```
+
+Let's test if the residuals follow a normal distribution with the Shapiro test:
+```{r}
+shapiro.test(model$residuals)
+```
+
+As the `p-value > 0.05`, the residuals follow a normal distribution.
+
+To end, let's test with ANOVA if the reduced model is better than the original model:
+
+```{r}
+anova(lm(PIQ~., data=data), model)
+```
+
+As `p-value` is huge, the reduced model is better than original model.
+
+
+
+### Section B
+
+Load the `prostate` dataset of the library `ElemStatLearn` and remove the `train` column.
+```{r}
+# install.packages("ElemStatLearn")
+library("ElemStatLearn")
+data(prostate)
+head(prostate)
+prostate$train <- NULL
+head(prostate)
+```
+
+
+##### **- What is the best model which explain the `lpsa` variable?** 
+
+Let's make a `stepAIC` for know what is the best model:
+```{r}
+library(MASS)
+fit0 <- lm(lpsa~1, data=prostate)
+fit1 <- lm(lpsa~., data=prostate)
+step <- stepAIC(fit0, direction = "forward", scope = list(lower = fit0, upper = fit1))
+```
+
+The best model by `stepAIC` is:
+```{r}
+step$anova
+step$call
+```
+
+Its AIC value is:
+```{r}
+best.model <- lm(formula = lpsa ~ lcavol + lweight + svi + lbph + age, data = prostate)
+extractAIC(best.model, scale=0)
+```
+
+
+##### **- Provide a confidence interval for the coefficients.**
+
+Let's make a summary, get the coefficients and its confidence interval:
+```{r}
+summary(best.model)
+best.model$coefficients
+confint(best.model)
+```

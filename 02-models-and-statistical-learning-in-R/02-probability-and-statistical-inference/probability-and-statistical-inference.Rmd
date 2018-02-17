@@ -19,7 +19,7 @@ We have the IQ of a sample of 5 subjects:
 
 We want to:
   
-  - Case 1: Calculate the confidence interval above the mean (95%).
+##### **- Case 1: Calculate the confidence interval above the mean (95%).**
   
 ```{r}
 iq <- c(110,100,115,105,104)
@@ -28,10 +28,8 @@ t.test(iq)
 ```
   
   The confidence interval (95%) is: [99.59193, 114.00807].
-    
-  \newline
-    
-  - Case 2: Indicate if this subjects have been extracted of a population with mean = 100.
+
+##### **- Case 2: Indicate if this subjects have been extracted of a population with mean = 100.**
     
 ```{r}
 # Calculate if the mean is equal to 100
@@ -101,7 +99,8 @@ data("PlantGrowth")
 PlantGrowth
 ```
 
-  - Could it considered that with the three treatments, the plants have the same growth?
+##### **- Could it considered that with the three treatments, the plants have the same growth?**
+
 ```{r}
 # We are going to a exploratory analysis for seeing its behaviour:
 library(ggplot2)
@@ -114,7 +113,7 @@ ggplot(PlantGrowth, aes(x = weight, fill = group)) +
   
   As we can see, the three treatments have not the same growth above the plants.
   
-  - Make the one-way ANOVA. What could conclusions infer of this way?
+##### **- Make the one-way ANOVA. What could conclusions infer of this way?**
   
   Let's see if the groups are not equals
 ```{r}
