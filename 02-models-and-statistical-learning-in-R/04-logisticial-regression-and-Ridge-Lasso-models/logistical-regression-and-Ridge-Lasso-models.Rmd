@@ -1,0 +1,166 @@
+---
+title: "Logistical Regression and Ridge and Lasso Models"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+## Clasification problem
+
+Load the dataset of breast cancer in Wisconsin. Divide it on train (rows [1-400]) and test (rows [401-end]). 
+
+
+```{r}
+data <- read.csv('data/wisconsin_breast.csv')
+dim(data)
+head(data)
+str(data)
+```
+
+```{r}
+# The variable which indicates the breast cancer is V2, for that, let's convert its value in numeric (0,1)
+data$V2 <- as.numeric(data$V2) - 1
+
+# We divide the dataset
+X <- data[, 3:ncol(data)]
+Y <- X$V2
+
+X.train <- X[1:400,]
+Y.train <- Y[1:400]
+X.test  <- X[401:nrow(X),]
+Y.test <- Y[401:length(Y)]
+
+# Check that division
+dim(X.train)
+length(Y.train)
+dim(X.test)
+length(Y.test)
+```
+
+
+
+### Section A: Logistical regression with AIC
+
+Make a logistical regression making a model selection with AIC and give confusion matrix and the metrics in the test:
+
+#### **- What variables are more influent for having breast cancer?**
+```{r}
+# Let's make a model selection using stepAIC
+library(MASS)
+fit0 <- glm(V2~1, data = X.train, family = binomial)
+fit1 <- glm(V2~., data = X.train, family = binomial)
+
+best.model <- stepAIC(fit0, direction = "forward", scope = list(upper = fit1, lower = fit0))
+```
+
+```{r}
+# Let's see the selected model
+summary(best.model)
+```
+
+The variables more influents for having breast cancer are: `V4`, `V13`, `V30` and `Intercept`. In less measure, also the variables `V27`, `V5` and `V26`.
+
+
+#### **- Make the predition above the test set, giving the confusion matrix.**
+
+```{r}
+# Load the necessary library
+library(caret)
+
+# We are going to make the predition. As y.pred contains [0,1] values, let's convert like 1 value if its value is > 0.5, and otherwise 0.
+AIC.pred <- as.numeric(predict(best.model, newdata = X.test, type = "response") > 0.5)
+
+# Let's give the confusion matrix
+AIC.confusionMatrix <- confusionMatrix(Y.test, AIC.pred, mode = "everything")
+AIC.confusionMatrix
+```
+
+
+
+
+
+### Section B: Logistical regression with Ridge and Lasso models
+
+Apply the Ridge and Lasso regression, give the confusion matrix and the metrics. What the three options (AIC, Ridge or Lasso) have better results?
+
+The best result have better `Recall`, because we don't want to send ill patients to home.
+
+```{r}
+# Load the necessary library
+library(glmnet)
+
+# Convert the X data to data.matrix and remove the "V2" column, because it is not necessary for 'glmnet' training
+X.train <- data.matrix(X.train[,2:ncol(X.train)])
+X.test <- data.matrix(X.test[,2:ncol(X.test)])
+```
+
+
+First, we are going to make the **Ridge** regression:
+```{r}
+# Let's apply the Ridge regression -> alpha = 0
+set.seed(999)
+ridge <- cv.glmnet(X.train, Y.train, family='binomial', alpha=0, parallel=TRUE, standardize=TRUE, type.measure='auc')
+```
+
+```{r}
+# Let's see the results of Ridge regression
+plot(ridge)
+
+# Let's see the best value of lambda
+ridge$lambda.min
+
+# Let's see the highest error value estimed for this min lambda value given by MSE
+max(ridge$cvm)
+
+# Let's see the coefficient values:
+coef(ridge, s=ridge$lambda.min)
+```
+
+```{r}
+# Les't make the prediction and give the metrics:
+ridge.pred <- as.numeric(predict.glmnet(ridge$glmnet.fit, newx = X.test, s = ridge$lambda.min) > 0.5)
+ridge.confusionMatrix <- confusionMatrix(Y.test, ridge.pred, mode = "everything")
+ridge.confusionMatrix
+```
+
+
+
+
+
+Now, we are going to make the **Lasso** regression:
+```{r}
+# Let's apply the Lasso regression -> alpha = 1
+set.seed(999)
+lasso <- cv.glmnet(X.train, Y.train, family='binomial', alpha=1, parallel=TRUE, standardize=TRUE, type.measure='auc')
+```
+
+```{r}
+# Let's see the results of Lasso regression
+plot(lasso)
+
+# Let's see the best value of lambda
+lasso$lambda.min
+
+# Let's see the highest error value estimed for this min lambda value given by MSE
+max(lasso$cvm)
+
+# Let's see the coefficient values:
+coef(lasso, s=lasso$lambda.min)
+```
+
+```{r}
+# Les't make the prediction and give the metrics:
+lasso.pred <- as.numeric(predict.glmnet(lasso$glmnet.fit, newx = X.test, s = lasso$lambda.min) > 0.5)
+lasso.confusionMatrix <- confusionMatrix(Y.test, lasso.pred, mode = "everything")
+lasso.confusionMatrix
+```
+
+Let's see what model is better with its `Recall` value:
+```{r}
+AIC.confusionMatrix$byClass["Recall"]
+ridge.confusionMatrix$byClass["Recall"]
+lasso.confusionMatrix$byClass["Recall"]
+```
+
+The best model is Ridge, because it obtains the best `Recall`.
