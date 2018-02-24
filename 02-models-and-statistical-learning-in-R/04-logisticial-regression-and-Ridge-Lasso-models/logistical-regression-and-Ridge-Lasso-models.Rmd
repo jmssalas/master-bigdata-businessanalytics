@@ -118,7 +118,7 @@ coef(ridge, s=ridge$lambda.min)
 ```
 
 ```{r}
-# Les't make the prediction and give the metrics:
+# Let's make the prediction and give the metrics:
 ridge.pred <- as.numeric(predict.glmnet(ridge$glmnet.fit, newx = X.test, s = ridge$lambda.min) > 0.5)
 ridge.confusionMatrix <- confusionMatrix(Y.test, ridge.pred, mode = "everything")
 ridge.confusionMatrix

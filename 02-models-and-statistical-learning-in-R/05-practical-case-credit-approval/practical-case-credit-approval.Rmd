@@ -1,0 +1,382 @@
+---
+title: "Practical Case: Credit Approval"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+### Definition
+
+We are going to take the credit approval dataset on https://archive.ics.uci.edu/ml/datasets/Credit+Approval. The dataset information is on https://archive.ics.uci.edu/ml/machine-learning-databases/credit-screening/crx.names and it is the following:
+
+      1. Title: Credit Approval
+
+      2. Sources: 
+          (confidential)
+          Submitted by quinlan@cs.su.oz.au
+      
+      3.  Past Usage:
+      
+          See Quinlan,
+          * "Simplifying decision trees", Int J Man-Machine Studies 27,
+            Dec 1987, pp. 221-234.
+          * "C4.5: Programs for Machine Learning", Morgan Kaufmann, Oct 1992
+        
+      4.  Relevant Information:
+      
+          This file concerns credit card applications.  All attribute names
+          and values have been changed to meaningless symbols to protect
+          confidentiality of the data.
+        
+          This dataset is interesting because there is a good mix of
+          attributes -- continuous, nominal with small numbers of
+          values, and nominal with larger numbers of values.  There
+          are also a few missing values.
+        
+      5.  Number of Instances: 690
+      
+      6.  Number of Attributes: 15 + class attribute
+      
+      7.  Attribute Information:
+      
+          A1:	b, a.
+          A2:	continuous.
+          A3:	continuous.
+          A4:	u, y, l, t.
+          A5:	g, p, gg.
+          A6:	c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.
+          A7:	v, h, bb, j, n, z, dd, ff, o.
+          A8:	continuous.
+          A9:	t, f.
+          A10:	t, f.
+          A11:	continuous.
+          A12:	t, f.
+          A13:	g, p, s.
+          A14:	continuous.
+          A15:	continuous.
+          A16: +,-         (class attribute)
+      
+      8.  Missing Attribute Values:
+          37 cases (5%) have one or more missing values.  The missing
+          values from particular attributes are:
+      
+          A1:  12
+          A2:  12
+          A4:   6
+          A5:   6
+          A6:   9
+          A7:   9
+          A14: 13
+      
+      9.  Class Distribution
+        
+          +: 307 (44.5%)
+          -: 383 (55.5%)
+      
+#### To do
+
+1. Load data. Make a inspection by variables of the credit approval distribution according to each attribute visually. Make the relevant observations. What variables are better for separating data?
+2. Prepare dataset conveniently and impute the missing values using the `missForest` library.
+3. Divide dataset taking the first 590 instances like train and the last 100 like test.
+4. Train a logistical regression model with Ridge and Lasso regularization on train, selecting the model which has higher `AUC`. Give the metrics in test.
+5. Give the *log odds* of the predictors variables above the objective variable.
+6. If for each true positive we earn 100e and for each false positive we lost 20e, what rentability contributes apply this model?
+
+
+-------------------------------------------
+
+
+### 1. Load data. Make a inspection by variables of the credit approval distribution according to each attribute visually. Make the relevant observations. What variables are better for separating data?
+
+
+```{r}
+# Read data using this URL:
+url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/credit-screening/crx.data"
+data <- read.csv(url, header = FALSE)
+
+# If this URL is not enabled, load data: 
+# data <- read.csv("data/credit-approval.csv")
+
+head(data)
+str(data)
+summary(data)
+```
+
+We are going to make the visual inspection for each variable:
+
+```{r}
+library(ggplot2)
+
+# V1
+ggplot(data, aes(x = V16, fill = V1)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V1)
+```
+
+
+```{r}
+# V2
+pairs(data$V16 ~ data$V2)
+```
+
+```{r}
+# V3
+pairs(data$V16 ~ data$V3)
+```
+
+
+```{r}
+# V4
+ggplot(data, aes(x = V16, fill = V4)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V4)
+```
+
+
+```{r}
+# V5
+ggplot(data, aes(x = V16, fill = V5)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V5)
+```
+
+
+```{r}
+# V6
+ggplot(data, aes(x = V16, fill = V6)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V6)
+```
+
+
+```{r}
+# V7
+ggplot(data, aes(x = V16, fill = V7)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V7)
+```
+
+
+```{r}
+# V8
+pairs(data$V16 ~ data$V8)
+```
+
+
+```{r}
+# V9
+ggplot(data, aes(x = V16, fill = V9)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V9)
+```
+
+
+```{r}
+# V10
+ggplot(data, aes(x = V16, fill = V10)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V10)
+```
+
+
+```{r}
+# V11
+pairs(data$V16 ~ data$V11)
+```
+
+```{r}
+# V12
+ggplot(data, aes(x = V16, fill = V12)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V12)
+```
+
+
+```{r}
+# V13
+ggplot(data, aes(x = V16, fill = V13)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V13)
+```
+
+```{r}
+# V14
+ggplot(data, aes(x = V16, fill = V14)) +
+  geom_bar()
+
+pairs(data$V16 ~ data$V14)
+```
+
+```{r}
+# V15
+pairs(data$V16 ~ data$V15)
+```
+
+
+We can observe the following:
+
+- **In terms of continuous variables**: None of them give us a relevant information, because their values are distributed the same way above `V16` variable.
+- **In terms of discrete variables**: First, there are missing values, this involve that we must remove them. Second, the variables: `V4` and `V5` contain values which are only in the `+` class, for that, these variables are good for separating data. In addition, the `V9` variable contain for its `t` value, higher amount of `+` class and for its `f` value, higher amount of `-` class; and the `V10` variable is the same of `V9` variable.
+
+
+
+
+
+### 2. Prepare dataset conveniently and impute the missing values using the `missForest` library.
+
+In this dataset, the missing values are like `?` value. For that, we are going to convert this value to `NA` value.
+
+```{r}
+data[data == '?'] <- NA
+summary(data)
+```
+
+Now, we are going to impute the missing values with `missForest`:
+```{r}
+library(missForest)
+# Let's impute the missing values
+data.imp <- missForest(data, maxiter = 20, ntree = 500, variablewise = T)
+```
+
+`missForest` gives us this error because the `V14` and `V2` variables contain lots of values. For that, we are going to convert `V14` and `V2` from `factor` to its real values:
+
+```{r}
+data$V2 <- as.numeric(as.character(data$V2))
+data$V14 <- as.numeric(as.character(data$V14))
+summary(data)
+```
+
+Now, let's apply `missForest`:
+```{r}
+data.imp <- missForest(data, maxiter = 20, ntree = 500, variablewise = T)
+```
+
+The error obtained by `missForest` is:
+```{r}
+data.imp$OOBerror
+```
+
+We replace the data with imputated data by `missForest`:
+```{r}
+data <- data.imp$ximp
+summary(data)
+```
+
+
+
+
+### 3. Divide dataset taking the first 590 instances like train and the last 100 like test.
+
+Let's divide dataset:
+```{r}
+# Convert + and - classes to 0 and 1
+data$V16 <- as.numeric(data$V16) - 1
+
+# Divide dataset
+x.train <- data[1:590,]
+y.train <- x.train$V16
+x.test  <- data[591:nrow(data),]
+y.test  <- x.test$V16
+```
+
+
+
+
+
+### 4. Train a logistical regression model with Ridge and Lasso regularization on train, selecting the model which has higher `AUC`. Give the metrics in test.
+
+First, let's start with the **Ridge** regularization:
+```{r}
+# Load the necessary library
+library(glmnet)
+
+# Convert the X data to data.matrix and remove the "V16" column, because it is not necessary for 'glmnet' training
+x.train <- data.matrix(x.train[,1:(ncol(x.train) - 1)])
+x.test <- data.matrix(x.test[,1:(ncol(x.test) - 1)])
+```
+
+```{r}
+# Let's apply the Ridge regression -> alpha = 0
+set.seed(999)
+ridge <- cv.glmnet(x.train, y.train, family='binomial', alpha=0, parallel=TRUE, standardize=TRUE, type.measure='auc')
+
+# Let's see the results of Ridge regression
+plot(ridge)
+coef(ridge, s=ridge$lambda.min)
+```
+
+
+Second, let's continue with the **Lasso** regularization:
+
+```{r}
+# Let's apply the Lasso regression -> alpha = 1
+set.seed(999)
+lasso <- cv.glmnet(x.train, y.train, family='binomial', alpha=1, parallel=TRUE, standardize=TRUE, type.measure='auc')
+
+# Let's see the results of Ridge regression
+plot(lasso)
+coef(lasso, s=lasso$lambda.min)
+```
+
+Third, let's compare the models:
+
+- **Ridge** has obtained the following `AUC`:
+```{r}
+max(ridge$cvm)
+```
+
+- **Lasso** has obtained the following `AUC`:
+```{r}
+max(lasso$cvm)
+```
+
+For these result, the selected model is **Lasso**, because it give higher `AUC` value. Its metrics are:
+```{r}
+library(caret)
+lasso.pred <- as.numeric(predict.glmnet(lasso$glmnet.fit, newx = x.test, s = lasso$lambda.min) > 0.5)
+lasso.confusionMatrix <- confusionMatrix(y.test, lasso.pred, mode = "everything")
+lasso.confusionMatrix
+```
+
+
+
+
+### 5. Give the *log odds* of the predictors variables above the objective variable.
+```{r}
+# The coefficients of the model are:
+coef(lasso, s=lasso$lambda.min)
+# The log odds of the predictors are:
+exp(coef(lasso, s=lasso$lambda.min))
+```
+
+Relevant conclusions of these results:
+
+- Increase `V9` variable in one unit does that the probability of `-` value increases a 1965%.
+- Increase `V10` variable in one unit does that the probability of `-` value increases a 104%.
+- Increase `V4` variable in one unit does that the probability of `-` value decreases a 31.85%.
+- Increase `V14` variabe in one unit does the the probability of `-` value decrease a 1%.
+
+
+
+### 6. If for each true positive we earn 100e and for each false positive we lost 20e, what rentability contributes apply this model?
+
+Let's see the confusion matrix obtained:
+```{r}
+lasso.confusionMatrix$table
+```
+
+The rentability of this model is:
+```{r}
+85*100 - 1*20
+```
