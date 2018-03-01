@@ -227,7 +227,7 @@ pairs(data$V16 ~ data$V15)
 We can observe the following:
 
 - **In terms of continuous variables**: None of them give us a relevant information, because their values are distributed the same way above `V16` variable.
-- **In terms of discrete variables**: First, there are missing values, this involve that we must remove them. Second, the variables: `V4` and `V5` contain values which are only in the `+` class, for that, these variables are good for separating data. In addition, the `V9` variable contain for its `t` value, higher amount of `+` class and for its `f` value, higher amount of `-` class; and the `V10` variable is the same of `V9` variable.
+- **In terms of discrete variables**: First, there are missing values, this involve that we must remove them. Second, the variables: `V4` and `V5` contain values which are only in the `+` class, for that, these variables are good for separating data. In addition, the `V9` variable contains for its `t` value higher amount of `+` class and for its `f` value higher amount of `-` class; and the `V10` variable is the same of `V9` variable.
 
 
 
@@ -362,10 +362,10 @@ exp(coef(lasso, s=lasso$lambda.min))
 
 Relevant conclusions of these results:
 
-- Increase `V9` variable in one unit does that the probability of `-` value increases a 1965%.
+- Increase `V9` variable in one unit does that the probability of `-` value increases a 1964%.
 - Increase `V10` variable in one unit does that the probability of `-` value increases a 104%.
-- Increase `V4` variable in one unit does that the probability of `-` value decreases a 31.85%.
-- Increase `V14` variabe in one unit does the the probability of `-` value decrease a 1%.
+- Increase `V4` variable in one unit does that the probability of `-` value decreases a 31.76%.
+- Increase `V14` variable in one unit does the the probability of `-` value decreases a 1%.
 
 
 
