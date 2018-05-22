@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>01-first-steps-nltk</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>02-practical-case-1</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,7 +11775,26 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="NLP---First-steps-with-Natural-Language-Took-Kit-(NLTK)">NLP - First steps with Natural Language Took Kit (NLTK)<a class="anchor-link" href="#NLP---First-steps-with-Natural-Language-Took-Kit-(NLTK)">&#182;</a></h1>
+<h1 id="NLP---Practical-case-1">NLP - Practical case 1<a class="anchor-link" href="#NLP---Practical-case-1">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using the NLP chain which we used in the <a href="01-first-steps-nltk.ipynb">last notebook</a>, we have to do:</p>
+<ul>
+<li><p>A NLP chain with the following elements:</p>
+<p><code>Word tokenization -&gt; Lemmatization -&gt; Syntactic analysis</code></p>
+</li>
+</ul>
+<ul>
+<li><p>A NLP chain with the following elements:</p>
+<p><code>Word tokenization -&gt; Lemmatization -&gt; POS tagger -&gt; Syntactic analysis</code></p>
+</li>
+</ul>
+
 </div>
 </div>
 </div>
@@ -11820,16 +11839,7 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Import-NLTK">Import NLTK<a class="anchor-link" href="#Import-NLTK">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>At the beginning, we are going to import NLTK and download all its packages:</p>
-
+<h3 id="Part-1:-Word-tokenization--&gt;-Lemmatization--&gt;-Syntactic-analysis">Part 1: <code>Word tokenization -&gt; Lemmatization -&gt; Syntactic analysis</code><a class="anchor-link" href="#Part-1:-Word-tokenization--&gt;-Lemmatization--&gt;-Syntactic-analysis">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -11838,22 +11848,16 @@ Populating the interactive namespace from numpy and matplotlib
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="c1">#nltk.download() #Execute if it is not downloaded</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import all packages which we need </span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="k">import</span> <span class="n">WordNetLemmatizer</span> 
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="k">import</span> <span class="n">wordnet</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1.-Create-a-input-text-for-our-NLP-chain">1. Create a input text for our NLP chain<a class="anchor-link" href="#1.-Create-a-input-text-for-our-NLP-chain">&#182;</a></h3>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -11888,22 +11892,14 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.-Split-the-text-on-sentences-(optional)">2. Split the text on sentences (optional)<a class="anchor-link" href="#2.-Split-the-text-on-sentences-(optional)">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2. Split the text on sentences (optional)</span>
-<span class="n">sentences</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">tokenize</span><span class="o">.</span><span class="n">sent_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;2. Sentences:&quot;</span><span class="p">,</span><span class="n">sentences</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2. Tokenization: Tokenize the text, i.e: split the text on tokens</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;2. Tokens:&quot;</span><span class="p">,</span><span class="n">tokens</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11920,7 +11916,7 @@ Populating the interactive namespace from numpy and matplotlib
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2. Sentences: [&#34;I didn&#39;t notice my animals were uglier than yours!&#34;, &#34;I&#39;m sorry...&#34;]
+<pre>2. Tokens: [&#39;I&#39;, &#39;did&#39;, &#34;n&#39;t&#34;, &#39;notice&#39;, &#39;my&#39;, &#39;animals&#39;, &#39;were&#39;, &#39;uglier&#39;, &#39;than&#39;, &#39;yours&#39;, &#39;!&#39;, &#39;I&#39;, &#34;&#39;m&#34;, &#39;sorry&#39;, &#39;...&#39;]
 </pre>
 </div>
 </div>
@@ -11928,23 +11924,15 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.-Tokenization:-Tokenize-the-text,-i.e:-split-the-text-on-tokens">3. Tokenization: Tokenize the text, i.e: split the text on tokens<a class="anchor-link" href="#3.-Tokenization:-Tokenize-the-text,-i.e:-split-the-text-on-tokens">&#182;</a></h3>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3. Tokenization: Tokenize the text, i.e: split the text on tokens</span>
-<span class="n">tokens</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;3. Tokens:&quot;</span><span class="p">,</span><span class="n">tokens</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3. Morphology/Lexical analysis: set a morphology tag for each token</span>
+<span class="n">tagged</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;3. Morphology analysis:&quot;</span><span class="p">,</span><span class="n">tagged</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11961,7 +11949,7 @@ Populating the interactive namespace from numpy and matplotlib
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>3. Tokens: [&#39;I&#39;, &#39;did&#39;, &#34;n&#39;t&#34;, &#39;notice&#39;, &#39;my&#39;, &#39;animals&#39;, &#39;were&#39;, &#39;uglier&#39;, &#39;than&#39;, &#39;yours&#39;, &#39;!&#39;, &#39;I&#39;, &#34;&#39;m&#34;, &#39;sorry&#39;, &#39;...&#39;]
+<pre>3. Morphology analysis: [(&#39;I&#39;, &#39;PRP&#39;), (&#39;did&#39;, &#39;VBD&#39;), (&#34;n&#39;t&#34;, &#39;RB&#39;), (&#39;notice&#39;, &#39;VB&#39;), (&#39;my&#39;, &#39;PRP$&#39;), (&#39;animals&#39;, &#39;NNS&#39;), (&#39;were&#39;, &#39;VBD&#39;), (&#39;uglier&#39;, &#39;JJR&#39;), (&#39;than&#39;, &#39;IN&#39;), (&#39;yours&#39;, &#39;JJR&#39;), (&#39;!&#39;, &#39;.&#39;), (&#39;I&#39;, &#39;PRP&#39;), (&#34;&#39;m&#34;, &#39;VBP&#39;), (&#39;sorry&#39;, &#39;JJ&#39;), (&#39;...&#39;, &#39;:&#39;)]
 </pre>
 </div>
 </div>
@@ -11969,504 +11957,13 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.-Morphology/Lexical-analysis:-using-Penn-Tree-Bank-POS-tags">4. Morphology/Lexical analysis: using Penn Tree Bank POS tags<a class="anchor-link" href="#4.-Morphology/Lexical-analysis:-using-Penn-Tree-Bank-POS-tags">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>First, we load the Penn Tree Bank POS tags in a <code>csv</code> file, because like this we can know what it means each tag:</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="n">peen_tree_bank</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/ref_nlp_penn_treebank2_pos_tags.csv&quot;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
-<span class="n">peen_tree_bank</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[6]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>penn_treebank_pos_locator</th>
-      <th>penn_treebank_tag</th>
-      <th>tag_description</th>
-      <th>example_text</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>CC</td>
-      <td>conjunction, coordinating</td>
-      <td>and, or, but</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2</td>
-      <td>CD</td>
-      <td>cardinal number</td>
-      <td>five, three, 13%</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>3</td>
-      <td>DT</td>
-      <td>determiner</td>
-      <td>the, a, these</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>4</td>
-      <td>EX</td>
-      <td>existential there</td>
-      <td>there were six boys</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>5</td>
-      <td>FW</td>
-      <td>foreign word</td>
-      <td>mais</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>6</td>
-      <td>IN</td>
-      <td>conjunction, subordinating or preposition</td>
-      <td>of, on, before, unless</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>7</td>
-      <td>JJ</td>
-      <td>adjective</td>
-      <td>nice, easy</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8</td>
-      <td>JJR</td>
-      <td>adjective, comparative</td>
-      <td>nicer, easier</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>9</td>
-      <td>JJS</td>
-      <td>adjective, superlative</td>
-      <td>nicest, easiest</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>10</td>
-      <td>LS</td>
-      <td>list item marker</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>11</td>
-      <td>MD</td>
-      <td>verb, modal auxillary</td>
-      <td>may, should</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>12</td>
-      <td>NN</td>
-      <td>noun, singular or mass</td>
-      <td>tiger, chair, laughter</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>13</td>
-      <td>NNS</td>
-      <td>noun, plural</td>
-      <td>tigers, chairs, insects</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>14</td>
-      <td>NNP</td>
-      <td>noun, proper singular</td>
-      <td>Germany, God, Alice</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>15</td>
-      <td>NNPS</td>
-      <td>noun, proper plural</td>
-      <td>we met two Christmases ago</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>16</td>
-      <td>PDT</td>
-      <td>predeterminer</td>
-      <td>both his children</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>17</td>
-      <td>POS</td>
-      <td>possessive ending</td>
-      <td>'s</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>18</td>
-      <td>PRP</td>
-      <td>pronoun, personal</td>
-      <td>me, you, it</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>19</td>
-      <td>PRP$</td>
-      <td>pronoun, possessive</td>
-      <td>my, your, our</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>20</td>
-      <td>RB</td>
-      <td>adverb</td>
-      <td>extremely, loudly, hard</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>21</td>
-      <td>RBR</td>
-      <td>adverb, comparative</td>
-      <td>better</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>22</td>
-      <td>RBS</td>
-      <td>adverb, superlative</td>
-      <td>best</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>23</td>
-      <td>RP</td>
-      <td>adverb, particle</td>
-      <td>about, off, up</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>24</td>
-      <td>SYM</td>
-      <td>symbol</td>
-      <td>%</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>25</td>
-      <td>TO</td>
-      <td>infinitival to</td>
-      <td>what to do?</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>26</td>
-      <td>UH</td>
-      <td>interjection</td>
-      <td>oh, oops, gosh</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>27</td>
-      <td>VB</td>
-      <td>verb, base form</td>
-      <td>think</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>28</td>
-      <td>VBZ</td>
-      <td>verb, 3rd person singular present</td>
-      <td>she thinks</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>29</td>
-      <td>VBP</td>
-      <td>verb, non-3rd person singular present</td>
-      <td>I think</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>30</td>
-      <td>VBD</td>
-      <td>verb, past tense</td>
-      <td>they thought</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>31</td>
-      <td>VBN</td>
-      <td>verb, past participle</td>
-      <td>a sunken ship</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>32</td>
-      <td>VBG</td>
-      <td>verb, gerund or present participle</td>
-      <td>thinking is fun</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>33</td>
-      <td>WDT</td>
-      <td>wh-determiner</td>
-      <td>which, whatever, whichever</td>
-    </tr>
-    <tr>
-      <th>33</th>
-      <td>34</td>
-      <td>WP</td>
-      <td>wh-pronoun, personal</td>
-      <td>what, who, whom</td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>35</td>
-      <td>WP$</td>
-      <td>wh-pronoun, possessive</td>
-      <td>whose, whosever</td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>36</td>
-      <td>WRB</td>
-      <td>wh-adverb</td>
-      <td>where, when</td>
-    </tr>
-    <tr>
-      <th>36</th>
-      <td>37</td>
-      <td>.</td>
-      <td>punctuation mark, sentence closer</td>
-      <td>.;?*</td>
-    </tr>
-    <tr>
-      <th>37</th>
-      <td>38</td>
-      <td>,</td>
-      <td>punctuation mark, comma</td>
-      <td>,</td>
-    </tr>
-    <tr>
-      <th>38</th>
-      <td>39</td>
-      <td>:</td>
-      <td>punctuation mark, colon</td>
-      <td>:</td>
-    </tr>
-    <tr>
-      <th>39</th>
-      <td>40</td>
-      <td>(</td>
-      <td>contextual separator, left paren</td>
-      <td>(</td>
-    </tr>
-    <tr>
-      <th>40</th>
-      <td>41</td>
-      <td>)</td>
-      <td>contextual separator, right paren</td>
-      <td>)</td>
-    </tr>
-    <tr>
-      <th>41</th>
-      <td>42</td>
-      <td>$</td>
-      <td>dollar</td>
-      <td>$ -$ --$ A$ C$ HK$ M$ NZ$ S$ U.S.$ US$</td>
-    </tr>
-    <tr>
-      <th>42</th>
-      <td>43</td>
-      <td>``</td>
-      <td>opening quotation mark</td>
-      <td>` ``</td>
-    </tr>
-    <tr>
-      <th>43</th>
-      <td>44</td>
-      <td>''</td>
-      <td>closing quotation mark</td>
-      <td>' ''</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 4. Morphology/Lexical analysis: set a morphology tag for each token</span>
-<span class="n">tagged</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;4. Morphology analysis:&quot;</span><span class="p">,</span><span class="n">tagged</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>4. Morphology analysis: [(&#39;I&#39;, &#39;PRP&#39;), (&#39;did&#39;, &#39;VBD&#39;), (&#34;n&#39;t&#34;, &#39;RB&#39;), (&#39;notice&#39;, &#39;VB&#39;), (&#39;my&#39;, &#39;PRP$&#39;), (&#39;animals&#39;, &#39;NNS&#39;), (&#39;were&#39;, &#39;VBD&#39;), (&#39;uglier&#39;, &#39;JJR&#39;), (&#39;than&#39;, &#39;IN&#39;), (&#39;yours&#39;, &#39;JJR&#39;), (&#39;!&#39;, &#39;.&#39;), (&#39;I&#39;, &#39;PRP&#39;), (&#34;&#39;m&#34;, &#39;VBP&#39;), (&#39;sorry&#39;, &#39;JJ&#39;), (&#39;...&#39;, &#39;:&#39;)]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.-Stemming:-get-the-stem-of-each-token">5. Stemming: get the stem of each token<a class="anchor-link" href="#5.-Stemming:-get-the-stem-of-each-token">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5. Stemming: get the stem of each token. For Stemming, the morphology analysis is not necessary.</span>
-<span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="k">import</span> <span class="n">PorterStemmer</span>
-
-<span class="n">stemmer</span> <span class="o">=</span> <span class="n">PorterStemmer</span><span class="p">()</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;5. Stems: &quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-    <span class="nb">print</span> <span class="p">(</span><span class="n">stemmer</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>5. Stems: 
-i
-did
-n&#39;t
-notic
-my
-anim
-were
-uglier
-than
-your
-!
-i
-&#39;m
-sorri
-...
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="6.-Lemmatization:-get-the-lemma-of-each-token">6. Lemmatization: get the lemma of each token<a class="anchor-link" href="#6.-Lemmatization:-get-the-lemma-of-each-token">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="k">import</span> <span class="n">WordNetLemmatizer</span> 
-<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="k">import</span> <span class="n">wordnet</span>
-
-<span class="c1"># Create the lemmatizer</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create the lemmatizer</span>
 <span class="n">lemmatizer</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
 
 <span class="c1"># WordNetLemmatizer only knows 4 POS tags: a (adjetive), r (adverb), n (noun) and v (verb)</span>
@@ -12475,7 +11972,10 @@ sorri
 
 <span class="n">wnTags</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="n">wordnet</span><span class="o">.</span><span class="n">NOUN</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">:</span><span class="n">wordnet</span><span class="o">.</span><span class="n">ADJ</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span><span class="n">wordnet</span><span class="o">.</span><span class="n">VERB</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span><span class="n">wordnet</span><span class="o">.</span><span class="n">ADV</span><span class="p">}</span> 
 
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;6. Lemmas: &quot;</span><span class="p">)</span>
+<span class="c1"># Create a lemmas array for storage the lemmas:</span>
+<span class="n">lemmas</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;4. Lemmas: &quot;</span><span class="p">)</span>
 <span class="c1"># For each token and its tag:</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">tok</span><span class="p">,</span><span class="n">tag</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tagged</span><span class="p">:</span>
     <span class="c1"># WordNet has not the short forms: &#39;m, n&#39;t, so we should introduce them for the good lemmatization</span>
@@ -12496,9 +11996,11 @@ sorri
     <span class="c1">#lemma = wordnet.morphy(tok.lower(), wnTags.get(tag, wordnet.NOUN))</span>
     
     
-    <span class="k">if</span> <span class="n">lemma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1">#Si wordnet no contiene la palabra, supondremos que el lema es igual al token</span>
+    <span class="k">if</span> <span class="n">lemma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># If WordNet has not the word, we assign its token to the lemma</span>
        <span class="n">lemma</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> 
-    <span class="nb">print</span> <span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
+    <span class="n">lemmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemma</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">lemmas</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12515,22 +12017,8 @@ sorri
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>6. Lemmas: 
-i
-do
-not
-notice
-my
-animal
-be
-ugly
-than
-yours
-!
-i
-be
-sorry
-...
+<pre>4. Lemmas: 
+[&#39;i&#39;, &#39;do&#39;, &#39;not&#39;, &#39;notice&#39;, &#39;my&#39;, &#39;animal&#39;, &#39;be&#39;, &#39;ugly&#39;, &#39;than&#39;, &#39;yours&#39;, &#39;!&#39;, &#39;i&#39;, &#39;be&#39;, &#39;sorry&#39;, &#39;...&#39;]
 </pre>
 </div>
 </div>
@@ -12539,40 +12027,30 @@ sorry
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="7.-Syntactic-analysis">7. Syntactic analysis<a class="anchor-link" href="#7.-Syntactic-analysis">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let&#39;s start with a sentence of a Groucho Marx&#39;s known text, with ambiguity</span>
-<span class="c1"># &quot;While hunting in Africa, I shot an elephant in my pijamas. How he got into my pijamas, I don&#39;t know.&quot;</span>
-<span class="n">sent</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;shot&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;elephant&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;pijamas&#39;</span><span class="p">]</span>
-
-<span class="c1"># Create our CFG</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create our CFG using the lemmas got in the last step</span>
 <span class="n">grammar</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">S -&gt; NP VP</span>
-<span class="s2">PP -&gt; P NP</span>
-<span class="s2">NP -&gt; Det N | Det N PP | &#39;I&#39;</span>
-<span class="s2">VP -&gt; V NP | VP PP</span>
-<span class="s2">Det -&gt; &#39;an&#39; | &#39;my&#39;</span>
-<span class="s2">N -&gt; &#39;elephant&#39; | &#39;pijamas&#39;</span>
-<span class="s2">V -&gt; &#39;shot&#39; | &#39;did&#39;</span>
-<span class="s2">P -&gt; &#39;in&#39;</span>
+<span class="s2">NP -&gt; Noun | Noun Verb Adj Punt </span>
+<span class="s2">VP -&gt; Verb Adv PP | Verb Adj Conj Det Punt</span>
+<span class="s2">PP -&gt; Noun Det Noun VP</span>
+<span class="s2">Punt -&gt; &#39;!&#39; NP | &#39;...&#39;</span>
+<span class="s2">Adv -&gt; &#39;not&#39;</span>
+<span class="s2">Adj -&gt; &#39;ugly&#39; | &#39;sorry&#39;</span>
+<span class="s2">Det -&gt; &#39;yours&#39; | &#39;my&#39;</span>
+<span class="s2">Noun -&gt; &#39;i&#39; | &#39;animal&#39; | &#39;notice&#39;</span>
+<span class="s2">Verb -&gt; &#39;do&#39; | &#39;be&#39;</span>
+<span class="s2">Conj -&gt; &#39;than&#39;</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-
 
 <span class="c1"># Generate a syntactic parser be able to recognize the grammar</span>
 <span class="n">parser</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">ChartParser</span><span class="p">(</span><span class="n">grammar</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;7. Syntactic analysis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sent</span><span class="p">):</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;5. Syntactic analysis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">lemmas</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">tree</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
@@ -12591,59 +12069,283 @@ sorry
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>7. Syntactic analysis:
+<pre>5. Syntactic analysis:
 
-|.  I  . shot.  an .eleph.  in .  my .pijam.|
-|[-----]     .     .     .     .     .     .| [0:1] &#39;I&#39;
-|.     [-----]     .     .     .     .     .| [1:2] &#39;shot&#39;
-|.     .     [-----]     .     .     .     .| [2:3] &#39;an&#39;
-|.     .     .     [-----]     .     .     .| [3:4] &#39;elephant&#39;
-|.     .     .     .     [-----]     .     .| [4:5] &#39;in&#39;
-|.     .     .     .     .     [-----]     .| [5:6] &#39;my&#39;
-|.     .     .     .     .     .     [-----]| [6:7] &#39;pijamas&#39;
-|[-----]     .     .     .     .     .     .| [0:1] NP -&gt; &#39;I&#39; *
-|[-----&gt;     .     .     .     .     .     .| [0:1] S  -&gt; NP * VP
-|.     [-----]     .     .     .     .     .| [1:2] V  -&gt; &#39;shot&#39; *
-|.     [-----&gt;     .     .     .     .     .| [1:2] VP -&gt; V * NP
-|.     .     [-----]     .     .     .     .| [2:3] Det -&gt; &#39;an&#39; *
-|.     .     [-----&gt;     .     .     .     .| [2:3] NP -&gt; Det * N
-|.     .     [-----&gt;     .     .     .     .| [2:3] NP -&gt; Det * N PP
-|.     .     .     [-----]     .     .     .| [3:4] N  -&gt; &#39;elephant&#39; *
-|.     .     [-----------]     .     .     .| [2:4] NP -&gt; Det N *
-|.     .     [-----------&gt;     .     .     .| [2:4] NP -&gt; Det N * PP
-|.     .     [-----------&gt;     .     .     .| [2:4] S  -&gt; NP * VP
-|.     [-----------------]     .     .     .| [1:4] VP -&gt; V NP *
-|.     [-----------------&gt;     .     .     .| [1:4] VP -&gt; VP * PP
-|[-----------------------]     .     .     .| [0:4] S  -&gt; NP VP *
-|.     .     .     .     [-----]     .     .| [4:5] P  -&gt; &#39;in&#39; *
-|.     .     .     .     [-----&gt;     .     .| [4:5] PP -&gt; P * NP
-|.     .     .     .     .     [-----]     .| [5:6] Det -&gt; &#39;my&#39; *
-|.     .     .     .     .     [-----&gt;     .| [5:6] NP -&gt; Det * N
-|.     .     .     .     .     [-----&gt;     .| [5:6] NP -&gt; Det * N PP
-|.     .     .     .     .     .     [-----]| [6:7] N  -&gt; &#39;pijamas&#39; *
-|.     .     .     .     .     [-----------]| [5:7] NP -&gt; Det N *
-|.     .     .     .     .     [-----------&gt;| [5:7] NP -&gt; Det N * PP
-|.     .     .     .     .     [-----------&gt;| [5:7] S  -&gt; NP * VP
-|.     .     .     .     [-----------------]| [4:7] PP -&gt; P NP *
-|.     .     [-----------------------------]| [2:7] NP -&gt; Det N PP *
-|.     [-----------------------------------]| [1:7] VP -&gt; VP PP *
-|.     [-----------------------------------&gt;| [1:7] VP -&gt; VP * PP
-|[=========================================]| [0:7] S  -&gt; NP VP *
-|.     .     [-----------------------------&gt;| [2:7] S  -&gt; NP * VP
-|.     [-----------------------------------]| [1:7] VP -&gt; V NP *
-|.     [-----------------------------------&gt;| [1:7] VP -&gt; VP * PP
-|[=========================================]| [0:7] S  -&gt; NP VP *
+|.i .do.no.no.my.an.be.ug.th.yo.! .i .be.so....|
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] &#39;i&#39;
+|.  [--]  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] &#39;do&#39;
+|.  .  [--]  .  .  .  .  .  .  .  .  .  .  .  .| [2:3] &#39;not&#39;
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] &#39;notice&#39;
+|.  .  .  .  [--]  .  .  .  .  .  .  .  .  .  .| [4:5] &#39;my&#39;
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] &#39;animal&#39;
+|.  .  .  .  .  .  [--]  .  .  .  .  .  .  .  .| [6:7] &#39;be&#39;
+|.  .  .  .  .  .  .  [--]  .  .  .  .  .  .  .| [7:8] &#39;ugly&#39;
+|.  .  .  .  .  .  .  .  [--]  .  .  .  .  .  .| [8:9] &#39;than&#39;
+|.  .  .  .  .  .  .  .  .  [--]  .  .  .  .  .| [9:10] &#39;yours&#39;
+|.  .  .  .  .  .  .  .  .  .  [--]  .  .  .  .| [10:11] &#39;!&#39;
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] &#39;i&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  [--]  .  .| [12:13] &#39;be&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  .  [--]  .| [13:14] &#39;sorry&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  .  .  [--]| [14:15] &#39;...&#39;
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] Noun -&gt; &#39;i&#39; *
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] NP -&gt; Noun *
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] NP -&gt; Noun * Verb Adj Punt
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] PP -&gt; Noun * Det Noun VP
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] S  -&gt; NP * VP
+|.  [--]  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] Verb -&gt; &#39;do&#39; *
+|.  [--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] VP -&gt; Verb * Adv PP
+|.  [--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] VP -&gt; Verb * Adj Conj Det Punt
+|[-----&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:2] NP -&gt; Noun Verb * Adj Punt
+|.  .  [--]  .  .  .  .  .  .  .  .  .  .  .  .| [2:3] Adv -&gt; &#39;not&#39; *
+|.  [-----&gt;  .  .  .  .  .  .  .  .  .  .  .  .| [1:3] VP -&gt; Verb Adv * PP
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] Noun -&gt; &#39;notice&#39; *
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] NP -&gt; Noun *
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] PP -&gt; Noun * Det Noun VP
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] S  -&gt; NP * VP
+|.  .  .  .  [--]  .  .  .  .  .  .  .  .  .  .| [4:5] Det -&gt; &#39;my&#39; *
+|.  .  .  [-----&gt;  .  .  .  .  .  .  .  .  .  .| [3:5] PP -&gt; Noun Det * Noun VP
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] Noun -&gt; &#39;animal&#39; *
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] NP -&gt; Noun *
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] PP -&gt; Noun * Det Noun VP
+|.  .  .  [--------&gt;  .  .  .  .  .  .  .  .  .| [3:6] PP -&gt; Noun Det Noun * VP
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] S  -&gt; NP * VP
+|.  .  .  .  .  .  [--]  .  .  .  .  .  .  .  .| [6:7] Verb -&gt; &#39;be&#39; *
+|.  .  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .| [6:7] VP -&gt; Verb * Adv PP
+|.  .  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .| [6:7] VP -&gt; Verb * Adj Conj Det Punt
+|.  .  .  .  .  [-----&gt;  .  .  .  .  .  .  .  .| [5:7] NP -&gt; Noun Verb * Adj Punt
+|.  .  .  .  .  .  .  [--]  .  .  .  .  .  .  .| [7:8] Adj -&gt; &#39;ugly&#39; *
+|.  .  .  .  .  .  [-----&gt;  .  .  .  .  .  .  .| [6:8] VP -&gt; Verb Adj * Conj Det Punt
+|.  .  .  .  .  [--------&gt;  .  .  .  .  .  .  .| [5:8] NP -&gt; Noun Verb Adj * Punt
+|.  .  .  .  .  .  .  .  [--]  .  .  .  .  .  .| [8:9] Conj -&gt; &#39;than&#39; *
+|.  .  .  .  .  .  [--------&gt;  .  .  .  .  .  .| [6:9] VP -&gt; Verb Adj Conj * Det Punt
+|.  .  .  .  .  .  .  .  .  [--]  .  .  .  .  .| [9:10] Det -&gt; &#39;yours&#39; *
+|.  .  .  .  .  .  [-----------&gt;  .  .  .  .  .| [6:10] VP -&gt; Verb Adj Conj Det * Punt
+|.  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .  .| [10:11] Punt -&gt; &#39;!&#39; * NP
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] Noun -&gt; &#39;i&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] NP -&gt; Noun *
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] PP -&gt; Noun * Det Noun VP
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] S  -&gt; NP * VP
+|.  .  .  .  .  .  .  .  .  .  [-----]  .  .  .| [10:12] Punt -&gt; &#39;!&#39; NP *
+|.  .  .  .  .  .  [-----------------]  .  .  .| [6:12] VP -&gt; Verb Adj Conj Det Punt *
+|.  .  .  [--------------------------]  .  .  .| [3:12] PP -&gt; Noun Det Noun VP *
+|.  .  .  .  .  [--------------------]  .  .  .| [5:12] S  -&gt; NP VP *
+|.  [--------------------------------]  .  .  .| [1:12] VP -&gt; Verb Adv PP *
+|[-----------------------------------]  .  .  .| [0:12] S  -&gt; NP VP *
+|.  .  .  .  .  .  .  .  .  .  .  .  [--]  .  .| [12:13] Verb -&gt; &#39;be&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .| [12:13] VP -&gt; Verb * Adv PP
+|.  .  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .| [12:13] VP -&gt; Verb * Adj Conj Det Punt
+|.  .  .  .  .  .  .  .  .  .  .  [-----&gt;  .  .| [11:13] NP -&gt; Noun Verb * Adj Punt
+|.  .  .  .  .  .  .  .  .  .  .  .  .  [--]  .| [13:14] Adj -&gt; &#39;sorry&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  .  [-----&gt;  .| [12:14] VP -&gt; Verb Adj * Conj Det Punt
+|.  .  .  .  .  .  .  .  .  .  .  [--------&gt;  .| [11:14] NP -&gt; Noun Verb Adj * Punt
+|.  .  .  .  .  .  .  .  .  .  .  .  .  .  [--]| [14:15] Punt -&gt; &#39;...&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  [-----------]| [11:15] NP -&gt; Noun Verb Adj Punt *
+|.  .  .  .  .  .  .  .  .  .  .  [-----------&gt;| [11:15] S  -&gt; NP * VP
+|.  .  .  .  .  .  .  .  .  .  [--------------]| [10:15] Punt -&gt; &#39;!&#39; NP *
+|.  .  .  .  .  .  [--------------------------]| [6:15] VP -&gt; Verb Adj Conj Det Punt *
+|.  .  .  [-----------------------------------]| [3:15] PP -&gt; Noun Det Noun VP *
+|.  .  .  .  .  [-----------------------------]| [5:15] S  -&gt; NP VP *
+|.  [-----------------------------------------]| [1:15] VP -&gt; Verb Adv PP *
+|[============================================]| [0:15] S  -&gt; NP VP *
 (S
-  (NP I)
+  (NP (Noun i))
   (VP
-    (VP (V shot) (NP (Det an) (N elephant)))
-    (PP (P in) (NP (Det my) (N pijamas))))) 
+    (Verb do)
+    (Adv not)
+    (PP
+      (Noun notice)
+      (Det my)
+      (Noun animal)
+      (VP
+        (Verb be)
+        (Adj ugly)
+        (Conj than)
+        (Det yours)
+        (Punt ! (NP (Noun i) (Verb be) (Adj sorry) (Punt ...))))))) 
 
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Part-2:-Word-tokenization--&gt;-Lemmatization--&gt;-POS-tagger--&gt;-Syntactic-analysis">Part 2: Word tokenization -&gt; Lemmatization -&gt; POS tagger -&gt; Syntactic analysis<a class="anchor-link" href="#Part-2:-Word-tokenization--&gt;-Lemmatization--&gt;-POS-tagger--&gt;-Syntactic-analysis">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let&#39;s get the POS tags of each lemma:</span>
+<span class="n">lemmas_tagged</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">lemmas</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Lemmas tagged:&quot;</span><span class="p">,</span> <span class="n">lemmas_tagged</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Lemmas tagged: [(&#39;i&#39;, &#39;NNS&#39;), (&#39;do&#39;, &#39;VBP&#39;), (&#39;not&#39;, &#39;RB&#39;), (&#39;notice&#39;, &#39;VB&#39;), (&#39;my&#39;, &#39;PRP$&#39;), (&#39;animal&#39;, &#39;JJ&#39;), (&#39;be&#39;, &#39;VB&#39;), (&#39;ugly&#39;, &#39;RB&#39;), (&#39;than&#39;, &#39;IN&#39;), (&#39;yours&#39;, &#39;UH&#39;), (&#39;!&#39;, &#39;.&#39;), (&#39;i&#39;, &#39;NN&#39;), (&#39;be&#39;, &#39;VB&#39;), (&#39;sorry&#39;, &#39;JJ&#39;), (&#39;...&#39;, &#39;:&#39;)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create our CFG using the lemmas got in the last step</span>
+<span class="n">grammar_POS</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">S -&gt; NP VP</span>
+<span class="s2">NP -&gt; &#39;NNS&#39; &#39;VBP&#39; &#39;RB&#39; | &#39;RB&#39; &#39;IN&#39; &#39;UH&#39; Punt | &#39;NN&#39; VP</span>
+<span class="s2">VP -&gt; &#39;VB&#39; &#39;PRP$&#39; &#39;JJ&#39; &#39;VB&#39; NP |  &#39;VB&#39; &#39;JJ&#39; Punt</span>
+<span class="s2">Punt -&gt; &#39;.&#39; NP | &#39;:&#39;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate a syntactic parser be able to recognize the grammar</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">ChartParser</span><span class="p">(</span><span class="n">grammar</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Syntactic analysis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">lemmas</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">tree</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Syntactic analysis:
+
+|.i .do.no.no.my.an.be.ug.th.yo.! .i .be.so....|
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] &#39;i&#39;
+|.  [--]  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] &#39;do&#39;
+|.  .  [--]  .  .  .  .  .  .  .  .  .  .  .  .| [2:3] &#39;not&#39;
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] &#39;notice&#39;
+|.  .  .  .  [--]  .  .  .  .  .  .  .  .  .  .| [4:5] &#39;my&#39;
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] &#39;animal&#39;
+|.  .  .  .  .  .  [--]  .  .  .  .  .  .  .  .| [6:7] &#39;be&#39;
+|.  .  .  .  .  .  .  [--]  .  .  .  .  .  .  .| [7:8] &#39;ugly&#39;
+|.  .  .  .  .  .  .  .  [--]  .  .  .  .  .  .| [8:9] &#39;than&#39;
+|.  .  .  .  .  .  .  .  .  [--]  .  .  .  .  .| [9:10] &#39;yours&#39;
+|.  .  .  .  .  .  .  .  .  .  [--]  .  .  .  .| [10:11] &#39;!&#39;
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] &#39;i&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  [--]  .  .| [12:13] &#39;be&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  .  [--]  .| [13:14] &#39;sorry&#39;
+|.  .  .  .  .  .  .  .  .  .  .  .  .  .  [--]| [14:15] &#39;...&#39;
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] Noun -&gt; &#39;i&#39; *
+|[--]  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] NP -&gt; Noun *
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] NP -&gt; Noun * Verb Adj Punt
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] PP -&gt; Noun * Det Noun VP
+|[--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:1] S  -&gt; NP * VP
+|.  [--]  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] Verb -&gt; &#39;do&#39; *
+|.  [--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] VP -&gt; Verb * Adv PP
+|.  [--&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [1:2] VP -&gt; Verb * Adj Conj Det Punt
+|[-----&gt;  .  .  .  .  .  .  .  .  .  .  .  .  .| [0:2] NP -&gt; Noun Verb * Adj Punt
+|.  .  [--]  .  .  .  .  .  .  .  .  .  .  .  .| [2:3] Adv -&gt; &#39;not&#39; *
+|.  [-----&gt;  .  .  .  .  .  .  .  .  .  .  .  .| [1:3] VP -&gt; Verb Adv * PP
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] Noun -&gt; &#39;notice&#39; *
+|.  .  .  [--]  .  .  .  .  .  .  .  .  .  .  .| [3:4] NP -&gt; Noun *
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] PP -&gt; Noun * Det Noun VP
+|.  .  .  [--&gt;  .  .  .  .  .  .  .  .  .  .  .| [3:4] S  -&gt; NP * VP
+|.  .  .  .  [--]  .  .  .  .  .  .  .  .  .  .| [4:5] Det -&gt; &#39;my&#39; *
+|.  .  .  [-----&gt;  .  .  .  .  .  .  .  .  .  .| [3:5] PP -&gt; Noun Det * Noun VP
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] Noun -&gt; &#39;animal&#39; *
+|.  .  .  .  .  [--]  .  .  .  .  .  .  .  .  .| [5:6] NP -&gt; Noun *
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] PP -&gt; Noun * Det Noun VP
+|.  .  .  [--------&gt;  .  .  .  .  .  .  .  .  .| [3:6] PP -&gt; Noun Det Noun * VP
+|.  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .  .| [5:6] S  -&gt; NP * VP
+|.  .  .  .  .  .  [--]  .  .  .  .  .  .  .  .| [6:7] Verb -&gt; &#39;be&#39; *
+|.  .  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .| [6:7] VP -&gt; Verb * Adv PP
+|.  .  .  .  .  .  [--&gt;  .  .  .  .  .  .  .  .| [6:7] VP -&gt; Verb * Adj Conj Det Punt
+|.  .  .  .  .  [-----&gt;  .  .  .  .  .  .  .  .| [5:7] NP -&gt; Noun Verb * Adj Punt
+|.  .  .  .  .  .  .  [--]  .  .  .  .  .  .  .| [7:8] Adj -&gt; &#39;ugly&#39; *
+|.  .  .  .  .  .  [-----&gt;  .  .  .  .  .  .  .| [6:8] VP -&gt; Verb Adj * Conj Det Punt
+|.  .  .  .  .  [--------&gt;  .  .  .  .  .  .  .| [5:8] NP -&gt; Noun Verb Adj * Punt
+|.  .  .  .  .  .  .  .  [--]  .  .  .  .  .  .| [8:9] Conj -&gt; &#39;than&#39; *
+|.  .  .  .  .  .  [--------&gt;  .  .  .  .  .  .| [6:9] VP -&gt; Verb Adj Conj * Det Punt
+|.  .  .  .  .  .  .  .  .  [--]  .  .  .  .  .| [9:10] Det -&gt; &#39;yours&#39; *
+|.  .  .  .  .  .  [-----------&gt;  .  .  .  .  .| [6:10] VP -&gt; Verb Adj Conj Det * Punt
+|.  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .  .| [10:11] Punt -&gt; &#39;!&#39; * NP
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] Noun -&gt; &#39;i&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  [--]  .  .  .| [11:12] NP -&gt; Noun *
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] NP -&gt; Noun * Verb Adj Punt
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] PP -&gt; Noun * Det Noun VP
+|.  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .  .| [11:12] S  -&gt; NP * VP
+|.  .  .  .  .  .  .  .  .  .  [-----]  .  .  .| [10:12] Punt -&gt; &#39;!&#39; NP *
+|.  .  .  .  .  .  [-----------------]  .  .  .| [6:12] VP -&gt; Verb Adj Conj Det Punt *
+|.  .  .  [--------------------------]  .  .  .| [3:12] PP -&gt; Noun Det Noun VP *
+|.  .  .  .  .  [--------------------]  .  .  .| [5:12] S  -&gt; NP VP *
+|.  [--------------------------------]  .  .  .| [1:12] VP -&gt; Verb Adv PP *
+|[-----------------------------------]  .  .  .| [0:12] S  -&gt; NP VP *
+|.  .  .  .  .  .  .  .  .  .  .  .  [--]  .  .| [12:13] Verb -&gt; &#39;be&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .| [12:13] VP -&gt; Verb * Adv PP
+|.  .  .  .  .  .  .  .  .  .  .  .  [--&gt;  .  .| [12:13] VP -&gt; Verb * Adj Conj Det Punt
+|.  .  .  .  .  .  .  .  .  .  .  [-----&gt;  .  .| [11:13] NP -&gt; Noun Verb * Adj Punt
+|.  .  .  .  .  .  .  .  .  .  .  .  .  [--]  .| [13:14] Adj -&gt; &#39;sorry&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  .  [-----&gt;  .| [12:14] VP -&gt; Verb Adj * Conj Det Punt
+|.  .  .  .  .  .  .  .  .  .  .  [--------&gt;  .| [11:14] NP -&gt; Noun Verb Adj * Punt
+|.  .  .  .  .  .  .  .  .  .  .  .  .  .  [--]| [14:15] Punt -&gt; &#39;...&#39; *
+|.  .  .  .  .  .  .  .  .  .  .  [-----------]| [11:15] NP -&gt; Noun Verb Adj Punt *
+|.  .  .  .  .  .  .  .  .  .  .  [-----------&gt;| [11:15] S  -&gt; NP * VP
+|.  .  .  .  .  .  .  .  .  .  [--------------]| [10:15] Punt -&gt; &#39;!&#39; NP *
+|.  .  .  .  .  .  [--------------------------]| [6:15] VP -&gt; Verb Adj Conj Det Punt *
+|.  .  .  [-----------------------------------]| [3:15] PP -&gt; Noun Det Noun VP *
+|.  .  .  .  .  [-----------------------------]| [5:15] S  -&gt; NP VP *
+|.  [-----------------------------------------]| [1:15] VP -&gt; Verb Adv PP *
+|[============================================]| [0:15] S  -&gt; NP VP *
 (S
-  (NP I)
+  (NP (Noun i))
   (VP
-    (V shot)
-    (NP (Det an) (N elephant) (PP (P in) (NP (Det my) (N pijamas)))))) 
+    (Verb do)
+    (Adv not)
+    (PP
+      (Noun notice)
+      (Det my)
+      (Noun animal)
+      (VP
+        (Verb be)
+        (Adj ugly)
+        (Conj than)
+        (Det yours)
+        (Punt ! (NP (Noun i) (Verb be) (Adj sorry) (Punt ...))))))) 
 
 </pre>
 </div>
