@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>01-clustering-using-kmeans</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>02-clustering-using-kmeans-with-tifdf</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,7 +11775,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Text-Mining---Clustering-usign-K-Means">Text Mining - Clustering usign <code>K-Means</code><a class="anchor-link" href="#Text-Mining---Clustering-usign-K-Means">&#182;</a></h1>
+<h1 id="Text-Mining---Clustering-using-K-Means-with-tfidf">Text Mining - Clustering using <code>K-Means</code> with <code>tfidf</code><a class="anchor-link" href="#Text-Mining---Clustering-using-K-Means-with-tfidf">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To apply clustering using <code>K-Means</code> with <code>tfidf</code> vectorizer, we are going to use the example into that <a href="http://scikit-learn.org/stable/auto_examples/text/document_clustering.html">URL</a>. That example use a vectorizer to getting the <code>tfidf</code> of all words in a document. This vectorizer is <code>TfidfVectorizer</code>.</p>
+<p>We are going to use the <a href="http://scikit-learn.org/stable/datasets/twenty_newsgroups.html#newsgroups">20newgroups</a> corpus and select two group: <code>alt.atheis</code> and <code>sci.space</code></p>
+
 </div>
 </div>
 </div>
@@ -11816,6 +11826,27 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import all libraries</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">fetch_20newsgroups</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">TfidfTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">metrics</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -11826,21 +11857,30 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 1. Load the corpus of texts</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1. Load the corpus of texts&#39;</span><span class="p">)</span>
-<span class="n">trainCorpus</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Me gustan las vacas&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;Me gustan los caballos&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;odio los perros&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;odio los caballos&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;me gustan las ranas&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;me gusta el helado&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;no quiero comer&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load some categories from the training set</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;alt.atheism&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sci.space&#39;</span>
+<span class="p">]</span>
 
-<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">trainCorpus</span> <span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading 20 newsgroups dataset for categories:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">categories</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">fetch_20newsgroups</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">,</span>
+                             <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> documents&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> categories&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">target_names</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># Get the labels of each document</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">target</span>
+<span class="c1"># Get the true k-clusters</span>
+<span class="n">true_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -11857,14 +11897,12 @@ Populating the interactive namespace from numpy and matplotlib
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1. Load the corpus of texts
-	 Me gustan las vacas
-	 Me gustan los caballos
-	 odio los perros
-	 odio los caballos
-	 me gustan las ranas
-	 me gusta el helado
-	 no quiero comer
+<pre>Loading 20 newsgroups dataset for categories:
+[&#39;alt.atheism&#39;, &#39;sci.space&#39;]
+
+1786 documents
+2 categories
+
 </pre>
 </div>
 </div>
@@ -11883,36 +11921,19 @@ Populating the interactive namespace from numpy and matplotlib
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2. Texts vectorization</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;2. Texts vectorization</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">use_idf</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="c1"># Import the vectorizer</span>
-<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">CountVectorizer</span>
-
-<span class="c1"># Create the vectorizer</span>
-<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>
-
-<span class="c1"># Use the vectorizer to transform the documents on a matrix of tf&#39;s (term frequency) of documents</span>
-<span class="n">vectorizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainCorpus</span><span class="p">)</span>
-
-<span class="c1"># Print the features of vectorizer</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Features: &#39;</span><span class="p">,</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
-
-<span class="c1"># Extract the terms frequency</span>
-<span class="n">tfMatrix</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">trainCorpus</span><span class="p">)</span>
-
-<span class="c1"># Print the matrix. </span>
-<span class="c1"># This matrix converted in array indicates: </span>
-<span class="c1">#    - Each column is a one feature, </span>
-<span class="c1">#    - Each row is a one sentence of corpus.</span>
-<span class="c1">#    - The (i,j) value indicates the frequency of j feature in a i sentence</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">tf Matrix:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tfMatrix</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
-
-<span class="c1"># Print the shape of our matrix:</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;number of sentences </span><span class="si">%d</span><span class="s2">, number of features </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tfMatrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="c1"># Create the tfidf vectorizer</span>
+<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_df</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="c1">#max_features = n_features,</span>
+                             <span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">use_idf</span><span class="o">=</span><span class="n">use_idf</span><span class="p">)</span>
+<span class="c1"># Vectorize dataset</span>
+<span class="n">vec_dataset</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vec_dataset</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;n_samples: </span><span class="si">%d</span><span class="s2">, n_features: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">vec_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11929,19 +11950,14 @@ Populating the interactive namespace from numpy and matplotlib
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2. Texts vectorization
-
-Features:  [&#39;caballos&#39;, &#39;comer&#39;, &#39;el&#39;, &#39;gusta&#39;, &#39;gustan&#39;, &#39;helado&#39;, &#39;las&#39;, &#39;los&#39;, &#39;me&#39;, &#39;no&#39;, &#39;odio&#39;, &#39;perros&#39;, &#39;quiero&#39;, &#39;ranas&#39;, &#39;vacas&#39;]
-
-tf Matrix:
- [[0 0 0 0 1 0 1 0 1 0 0 0 0 0 1]
- [1 0 0 0 1 0 0 1 1 0 0 0 0 0 0]
- [0 0 0 0 0 0 0 1 0 0 1 1 0 0 0]
- [1 0 0 0 0 0 0 1 0 0 1 0 0 0 0]
- [0 0 0 0 1 0 1 0 1 0 0 0 0 1 0]
- [0 0 1 1 0 1 0 0 1 0 0 0 0 0 0]
- [0 1 0 0 0 0 0 0 0 1 0 0 1 0 0]]
-number of sentences 7, number of features 15
+<pre>[[ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ ..., 
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]
+ [ 0.  0.  0. ...,  0.  0.  0.]]
+n_samples: 1786, n_features: 15500
 </pre>
 </div>
 </div>
@@ -11960,34 +11976,30 @@ number of sentences 7, number of features 15
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3. Texts clustering</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;3. Texts clustering&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Apply the KMeans algorithm</span>
+<span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">true_k</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;k-means++&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># Import the KMeans algorithm</span>
-<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
+<span class="c1"># Get time 0</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
-<span class="c1"># Assign the kmeans&#39;s k-value to k=2 because we want to get 2 clusters: positive and negative sentences </span>
-<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1"># Fit the KMeans algorithm with vectorized texts.</span>
+<span class="n">km</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">vec_dataset</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fit time: </span><span class="si">%0.3f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
 
-<span class="c1"># Create and fit the KMeans</span>
-<span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">k</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">km</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tfMatrix</span><span class="p">)</span>
+<span class="c1"># Print the clusters</span>
+<span class="n">terms</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()</span>
+<span class="n">order_centroids</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># Print the results:</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Clusters: &#39;</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
-
-<span class="c1"># Print the clusters with its sentences:</span>
-<span class="c1"># For each cluster</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cluster &#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-    
-    <span class="c1"># For each sentence</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="p">:</span>
-        <span class="k">if</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">trainCorpus</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Print the clusters:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">true_k</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster </span><span class="si">%d</span><span class="s2">:&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">order_centroids</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">terms</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12004,17 +12016,20 @@ number of sentences 7, number of features 15
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>3. Texts clustering
-Clusters:  [0 0 1 1 0 0 1]
-Cluster  0
-	 Me gustan las vacas
-	 Me gustan los caballos
-	 me gustan las ranas
-	 me gusta el helado
-Cluster  1
-	 odio los perros
-	 odio los caballos
-	 no quiero comer
+<pre>Initialization complete
+Iteration  0, inertia 3446.181
+Iteration  1, inertia 1741.009
+Iteration  2, inertia 1735.972
+Iteration  3, inertia 1733.070
+Iteration  4, inertia 1732.291
+Iteration  5, inertia 1732.167
+Iteration  6, inertia 1732.152
+Converged at iteration 6: center shift 0.000000e+00 within tolerance 6.317085e-09
+Fit time: 0.710s
+
+Print the clusters:
+Cluster 0: god com keith people sgi don livesey atheists say think
+Cluster 1: space nasa henry access com toronto digex gov alaska pat
 </pre>
 </div>
 </div>
@@ -12033,30 +12048,19 @@ Cluster  1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 4. Clustering quality measurement</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;4. Clustering quality measurement&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate the clustering goodness with: homogeneity_score, completeness_score and v_measure_score</span>
 
-<span class="c1"># Import the metrics</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">metrics</span>
-
-<span class="c1"># To measure the clustering quality, we need the real categories: 1 - negative sentences, 0 - positive sentences</span>
-<span class="n">sentencesTruth</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Clusters: &quot;</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sentences: &quot;</span><span class="p">,</span> <span class="n">sentencesTruth</span><span class="p">)</span>
-
-<span class="c1"># Calculate the clustering goodness with: homogeneity_score, completeness_score and v_measure_score</span>
 <span class="c1"># A cluster is homogeneous if its all elements contains members of the same class</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Homogeneity: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">homogeneity_score</span><span class="p">(</span><span class="n">sentencesTruth</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Homogeneity: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">homogeneity_score</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
 
 <span class="c1"># A class is compelete if its all elements belong to the same cluster</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completeness: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">completeness_score</span><span class="p">(</span><span class="n">sentencesTruth</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completeness: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">completeness_score</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
 
 <span class="c1"># V-measure is the weighted average of the last two metrics</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;V-measure: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">v_measure_score</span><span class="p">(</span><span class="n">sentencesTruth</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;V-measure: </span><span class="si">%0.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metrics</span><span class="o">.</span><span class="n">v_measure_score</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12073,12 +12077,9 @@ Cluster  1
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>4. Clustering quality measurement
-Clusters:  [0 0 1 1 0 0 1]
-Sentences:  [0, 0, 1, 1, 0, 0, 1]
-Homogeneity: 1.000
-Completeness: 1.000
-V-measure: 1.000
+<pre>Homogeneity: 0.902
+Completeness: 0.906
+V-measure: 0.904
 </pre>
 </div>
 </div>
@@ -12091,31 +12092,51 @@ V-measure: 1.000
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>The quality data are good with our dataset (1550 elements split on 2 clusters). The homogeneity is high (0.902) which indicates the elements which compose each cluster are very similar between them. In a clustering process, this fact is searched and, in addition, that the different clusters are as more heterogeneous as possible.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="5.-Use-the-trained-KMeans-to-classify-others-texts">5. Use the trained KMeans to classify others texts<a class="anchor-link" href="#5.-Use-the-trained-KMeans-to-classify-others-texts">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5. Use the trained KMeans to classify others texts</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;5. Use the trained KMeans to classify others texts&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Let&#39;s classify 2 new texts:&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">()</span>
 
-<span class="n">testCorpus</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;odio los animales&#39;</span><span class="p">,</span> <span class="s1">&#39;me gustan los pájaros&#39;</span><span class="p">]</span>
+<span class="c1"># Set the new texts:</span>
+<span class="n">atheism</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Atheism remains one of the most extreme taboos in Saudi Arabia. It is a red line that no one can cross. Atheists in Saudi Arabia have been suffering from imprisonment, maginalisation, slander, ostracisation and even execution. Atheists are considered terrorists. Efforts for normalisation between those who believe and those who don’t remain bleak in the kingdom. Despite constant warnings of Saudi religious authorities of “the danger of atheism,” many citizens in the kingdom are turning their backs on Islam. The Saudi dehumanizing strict laws in the name of Islam, easy access to information and mass communication are the primary driving forces pushing Saudis to leave religion. Unfortunately, those who explicitly do, find themselves harshly punished or forced to live dual lives.&quot;</span><span class="p">]</span>
+<span class="n">space</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;The man speaking was Neil Armstrong, whose brevity marked the moment when the lunar module Eagle completed its perilous journey from Apollo 11 and touched down upon the surface of the Moon. The world waited on tenterhooks as hour after hour of checks were carried out. Finally, the hatch opened, and Armstrong descended the ladder to become the first human to set foot on the Moon, with the now immortal words: That’s one small step for man, one giant leap for mankind.There cannot be many who have not, however briefly, glanced at the Moon and wondered what it must have been like for Armstrong to look back at the blue and green planet we call home. The landing may have happened almost five decades ago, but space exploration has not lost its allure. Even those of us who were not born when this momentous event unfolded are caught in its gravitational pull. With this in mind, it seems only fitting that Sotheby’s New York has decided to host its first space exploration auction, featuring memorabilia from American-led space missions, exactly 48 years to the day after Apollo 11’s lunar landing.&quot;</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Testing tests:&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">testCorpus</span> <span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-    
-<span class="c1"># Text vectorization</span>
-<span class="n">tfMatrixTest</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">testCorpus</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">tfMatrixTest:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tfMatrixTest</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="c1"># Vectorize the texts</span>
+<span class="n">tfAtheism</span> <span class="o">=</span>  <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">atheism</span><span class="p">)</span>
+<span class="n">tfSpace</span> <span class="o">=</span>  <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">space</span><span class="p">)</span>
 
-<span class="c1"># Classify the texts</span>
-<span class="n">pred</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">tfMatrixTest</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Clusters prediction: &#39;</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+<span class="c1"># Print the texts</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;TEXT 1 (about the atheism in Arabia Saudí):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">atheism</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;TEXT 2 (about the arrival of man on the moon):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">space</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">()</span>
+
+<span class="c1"># Print the tfMatrix</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;tfAtheism:&quot;</span><span class="p">,</span><span class="n">tfAtheism</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;tfSpace:&quot;</span><span class="p">,</span><span class="n">tfSpace</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="p">)</span>
+<span class="nb">print</span> <span class="p">()</span>
+
+<span class="c1"># Make the predition and print it</span>
+<span class="n">atheismPrediction</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">tfAtheism</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Text 1 prediction (atheism): Cluster&quot;</span><span class="p">,</span> <span class="n">atheismPrediction</span><span class="p">)</span>
+<span class="n">spacePrediction</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">tfSpace</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Text 2 prediction (space): Cluster&quot;</span><span class="p">,</span> <span class="n">spacePrediction</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12132,17 +12153,19 @@ V-measure: 1.000
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>5. Use the trained KMeans to classify others texts
+<pre>Let&#39;s classify 2 new texts:
 
-Testing tests:
-	 odio los animales
-	 me gustan los pájaros
+TEXT 1 (about the atheism in Arabia Saudí):
+ [&#39;Atheism remains one of the most extreme taboos in Saudi Arabia. It is a red line that no one can cross. Atheists in Saudi Arabia have been suffering from imprisonment, maginalisation, slander, ostracisation and even execution. Atheists are considered terrorists. Efforts for normalisation between those who believe and those who don’t remain bleak in the kingdom. Despite constant warnings of Saudi religious authorities of “the danger of atheism,” many citizens in the kingdom are turning their backs on Islam. The Saudi dehumanizing strict laws in the name of Islam, easy access to information and mass communication are the primary driving forces pushing Saudis to leave religion. Unfortunately, those who explicitly do, find themselves harshly punished or forced to live dual lives.&#39;]
 
-tfMatrixTest:
- [[0 0 0 0 0 0 0 1 0 0 1 0 0 0 0]
- [0 0 0 0 1 0 0 1 1 0 0 0 0 0 0]]
+TEXT 2 (about the arrival of man on the moon):
+ [&#39;The man speaking was Neil Armstrong, whose brevity marked the moment when the lunar module Eagle completed its perilous journey from Apollo 11 and touched down upon the surface of the Moon. The world waited on tenterhooks as hour after hour of checks were carried out. Finally, the hatch opened, and Armstrong descended the ladder to become the first human to set foot on the Moon, with the now immortal words: That’s one small step for man, one giant leap for mankind.There cannot be many who have not, however briefly, glanced at the Moon and wondered what it must have been like for Armstrong to look back at the blue and green planet we call home. The landing may have happened almost five decades ago, but space exploration has not lost its allure. Even those of us who were not born when this momentous event unfolded are caught in its gravitational pull. With this in mind, it seems only fitting that Sotheby’s New York has decided to host its first space exploration auction, featuring memorabilia from American-led space missions, exactly 48 years to the day after Apollo 11’s lunar landing.&#39;]
 
-Clusters prediction:  [1 0]
+tfAtheism: [[ 0.  0.  0. ...,  0.  0.  0.]]
+tfSpace: [[ 0.  0.  0. ...,  0.  0.  0.]]
+
+Text 1 prediction (atheism): Cluster 0
+Text 2 prediction (space): Cluster 1
 </pre>
 </div>
 </div>
@@ -12150,6 +12173,15 @@ Clusters prediction:  [1 0]
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As we can see, the our system has classify the new text correctly.</p>
+
+</div>
+</div>
 </div>
     </div>
   </div>
