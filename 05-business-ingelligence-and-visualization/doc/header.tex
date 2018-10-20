@@ -1,0 +1,87 @@
+\setcounter{secnumdepth}{3} % Para enumerar hasta subsubsection
+\setcounter{tocdepth}{3} % Para enumerar hasta subsubsection 
+ 
+\usepackage{indentfirst} % Paquete para iniciar el primer párrafo de una sección con sangría
+\usepackage[utf8]{inputenc}
+\usepackage[none]{hyphenat} %Paquete para indicar que no separe las palabras
+\usepackage{graphicx} %Paquete para incluir imágenes
+\usepackage{fancyhdr} %Paquete para modificar los pies de página y encabezados
+\usepackage{listings} %Paquete para poner código de programación
+\usepackage{color} %Paquete para definir los colores
+\usepackage[hidelinks]{hyperref} %Paquete para que el índice tenga referencia
+\usepackage{wrapfig} %Paquete para poner las imágenes con el texto en un lado.
+\usepackage{multicol} %Paquete para poner texto en dos columnas
+\usepackage{enumitem} %Paquete para poner en enumerate: 1.2, 1.3,...
+\usepackage[nottoc]{tocbibind} %Paquete para incluir la bibliografía en el índice
+\usepackage{colortbl} %Paquete para poner colores en las celdas
+\usepackage{tocloft} %Paquete para personalizar el índice
+\usepackage{textcomp} %Paquete para insertar símbolos raros
+\usepackage{amssymb} %Paquete para insertar flechas raras
+\usepackage{enumitem} %Paquete pare personalizar los enumerate
+%\usepackage{kbordermatrix} %Parquete para poner bordes en las matrices
+
+\definecolor{blue-violet}{rgb}{0.54,0.17,0.89}
+\definecolor{darkcerulean}{rgb}{0.03, 0.27, 0.49}
+\definecolor{ceruleanblue}{rgb}{0.16, 0.32, 0.75}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+
+\lstset{frame=Ltb,
+  language=Python,
+  framerule=0pt,
+  aboveskip=0.5cm,
+  framextopmargin=3pt,
+  framexbottommargin=3pt,
+  framexleftmargin=0.4cm,
+  framesep=0pt,
+  rulesep=.4pt,
+  backgroundcolor=\color{gray97},
+  rulesepcolor=\color{black},
+  %
+  stringstyle=\color{mauve},
+  showstringspaces = false,
+  basicstyle=\small\ttfamily,
+  commentstyle=\color{gray45},
+  keywordstyle=\color{darkcerulean},
+  %
+  numbers=left,
+  numbersep=15pt,
+  numberstyle=\tiny,
+  numberfirstline = false,
+  breaklines=true,
+  escapeinside=||,
+  %
+  literate={«}{{\guillemotleft}}1
+           {»}{{\guillemotright}}1
+           {é}{{\'e}}1
+           {í}{{\'i}}1
+           {ó}{{\'o}}1
+           {ú}{{\'u}}1
+           {á}{{\'a}}1
+           {ñ}{{\~n}}1
+           {Ñ}{{\~N}}1
+           {¿}{{?`}}1
+}
+
+% minimizar fragmentado de listados
+\lstnewenvironment{listing}[1][]
+{\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
+
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\partname}{TEMA}
+\renewcommand{\chaptername}{Tarea}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\listtablename}{Índice de tablas}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\bibname}{Bibliografía}
+% \renewcommand{\cftsecfont}{\bfseries} % Poner las secciones en negrita en el índice
+
+% Personalización del itemize
+\renewcommand{\labelitemi}{\textendash}
+\renewcommand{\labelitemii}{\textperiodcentered}
+\renewcommand{\labelitemiii}{\textasciicircum}

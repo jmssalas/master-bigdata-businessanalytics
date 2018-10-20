@@ -1,0 +1,141 @@
+\documentclass[a4paper,10pt,titlepage,oneside,openright]{book}
+	 \textheight = 24cm
+	 \textwidth = 18cm
+	 \topmargin = -1cm
+	 \oddsidemargin = -1cm
+	 
+%\input{../../../header-apuntes.tex} %Ponemos ruta de la cabecera
+\input{header.tex}
+	
+\graphicspath{ {images/} } %Indicamos la carpeta donde están las imágenes
+
+\newcounter{ejemplo} % Contador para los ejemplos
+%\addtocounter{ejemplo}{1} % Sumamos 1
+
+\newcommand{\master}{M. Big Data \& Business Analytics}
+\newcommand{\module}{Módulo V: Inteligencia de Negocio y Visualización}
+
+
+\begin{document}
+%--------------------------------------------------------------------
+\thispagestyle{empty}
+\begin{figure}[h]
+\includegraphics[scale=0.3]{logo-imf.png} \hspace{80mm}
+\includegraphics[scale=0.25]{logo-ucjc.png}
+\centering
+\end{figure}
+
+\vspace{5mm}
+
+\begin{center}
+\rule{150mm}{0.1mm} \\
+\vspace{5mm}
+\begin{Huge}
+ \textsc{Máster en \\ ~ \\ Big Data \& Business Analytics}
+\end{Huge}
+\vspace{5mm} \\
+\rule{150mm}{0.5mm}
+
+\vspace{20mm}
+
+\begin{huge}
+  \textsc{Módulo V: \\ Inteligencia de Negocio y \\ Visualización} \\ \vspace{15mm}
+\end{huge}
+
+\begin{LARGE}
+ Documentación del caso práctico\\ \vspace{5mm}
+ {\large  de Octubre del 2018}
+\end{LARGE}
+
+\vspace{25mm}
+
+\begin{Large}
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Autor} \\
+José María Sánchez Salas \\
+\textit{josemaria.sanchezsalas@gmail.com}
+\end{tabular}
+\end{center}
+\end{Large}
+\end{center}
+%--------------------------------------------------------------------
+\newpage
+\thispagestyle{empty}
+\section*{}
+\newpage
+
+\thispagestyle{empty}
+
+\tableofcontents
+\addtocontents{toc}{\textbf{\module}}
+
+\newpage
+\thispagestyle{empty}
+\section*{}
+\newpage
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\module}
+\fancyhead[RE,LO]{\master}
+\fancyfoot[CE,CO]{\thepage}
+
+% \lhead[]{} - \chead[]{} - \rhead[]{}
+\renewcommand{\headrulewidth}{0.5pt} % --> Definimos el grosor de la línea
+\renewcommand{\footrulewidth}{0.5pt}
+
+%--------------------------------------------------------------------
+\medskip
+\section{Introducción}
+Este documento contiene la explicación de mi solución propuesta al caso práctico del {\module}, del {\master} impartido por IMF Business School. El documento contiene dos secciones: uno para cada uno de los ejercicios del caso práctico. En cada ejercicio, se muestra previamente su enunciado y posteriormente la solución propuesta.
+
+
+
+\input{statement.tex}
+
+
+
+%--------------------------------------------------------------------
+\medskip
+\section{Solución}
+
+
+
+\input{sections/01.tex}
+\input{sections/02.tex}
+\input{sections/03.tex}
+\input{sections/04.tex}
+\input{sections/05.tex}
+\input{sections/06.tex}
+\input{sections/07.tex}
+\input{sections/08.tex}
+\input{sections/09.tex}
+\input{sections/10.tex}
+\input{sections/11.tex}
+\input{sections/12.tex}
+
+
+
+
+%--------------------------------------------------------------------
+\medskip
+\section{Conclusiones}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
