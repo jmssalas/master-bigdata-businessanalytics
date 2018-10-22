@@ -1,3 +1,31 @@
 %--------------------------------------------------------------------
 \medskip
 \subsection{Análisis de fuentes}
+\label{01}
+En esta sección se va a realizar el análisis de las fuentes de las que se dispone en este caso práctico. La sección está dividida en dos secciones: la primera de ellas se hace una descripción global de las fuentes mientras que en la segunda se hace una descripción detallada de los campos que contienen cada una de las fuentes.
+
+
+%--------------------------------------------------------------------
+\medskip
+\subsubsection{Descripción global de las fuentes}
+Para este problema se nos presenta una única fuente: un fichero en formato CSV que contiene la información de todos las encuestas registradas por la compañía Mystery Shopping. Este fichero CSV contiene los siguientes campos:
+
+
+%--------------------------------------------------------------------
+\medskip
+\subsubsection{Descripción en detalle de cada campo}
+
+\begin{itemize}
+ \item \texttt{COD\_LOC}. Se trata del código de centro en el que se realizó la encuesta. Es un campo alfanumérico y único que identifica al centro.
+ \item \texttt{NOMBRE\_LOC}. Se trata del nombre del centro al que corresponde el campo anterior. Es un campo alfanumérico.
+ \item \texttt{CP}. Corresponde con el código postal del centro y es un campo numérico.
+ \item \texttt{POBLACION}. Corresponde con la población asociada al código postal y en el que se ubica el centro. Se trata de un campo alfanumérico.
+ \item \texttt{OFICINA}. Se trata de la oficina a la que está asignada el centro. Se trata de un campo alfanumérico.
+ \item \texttt{PROVINCIA}. Provincia a la que pertenece la población del centro. Es un campo alfanumérico.
+ \item \texttt{COD\_PROY}. Código del proyecto al que se hace la encuesta. Es un campo alfanumérico.
+ \item \texttt{ID\_EVALUACION}. Código identificativo de la evaluación, es un campo numérico y único.
+ \item \texttt{FECHA DE EJECUCION}. Se trata de la fecha en la que se realizó la encuesta. Es un campo de tipo fecha.
+ \item \texttt{COD\_AUDITOR}. Código del auditor que realizó la encuesta. Se trata de un campo alfanumérico y único.
+ \item \texttt{RESULTADO}. Se trata del resultado de la encuesta realizada. Es un campo numérico decimal entre 0 y 1.
+ \item \texttt{TITULO\_CUESTIONARIO}. Título que tiene asociado el cuestionario que se ha realizado. Se trata de un campo alfanumérico y único.
+\end{itemize}
