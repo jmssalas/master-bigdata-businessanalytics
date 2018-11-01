@@ -6,7 +6,13 @@ Lo primero que se ha de hacer para realizar el diseño de un modelo lógico es i
 
 Seguidamente, identificar los hechos. Los \textbf{hechos} son los resultados obtenidos en las encuestas. \\
 
-Y por último, definir las métricas. Las \textbf{métricas} directas que se pueden definir son: \textit{Resultado final de la encuestas, cuya función de agregación sería la suma}.\\
+Y por último, definir las métricas. Las \textbf{métricas} directas que se pueden definir son: 
+\begin{itemize}
+ \item \textit{Resultado final de la encuestas, cuya función de agregación sería la suma}.
+ \item \textit{Encuesta con menor resultado, cuya función de agregación sería el mínimo}.
+ \item \textit{Encuesta con mayor resultado, cuya función de agregación sería el máximo}. 
+ \item \textit{Número total de encuestas, cuya función de agregación sería el conteo}. 
+\end{itemize}
 
 Una vez definidas las dimensiones, hechos y métricas, el siguiente paso es jerarquizar la información. Así pues, la jerarquización para todas las dimensiones anteriores es:
 \begin{itemize}
