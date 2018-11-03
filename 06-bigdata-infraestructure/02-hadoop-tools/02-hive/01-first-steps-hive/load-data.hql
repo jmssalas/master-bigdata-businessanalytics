@@ -1,0 +1,1 @@
+LOAD DATA LOCAL INPATH '/home/bigdata/git/master-bigdata-businessanalytics/06-bigdata-infraestructure/02-hadoop-tools/02-hive/01-first-steps-hive/data' INTO TABLE test;
