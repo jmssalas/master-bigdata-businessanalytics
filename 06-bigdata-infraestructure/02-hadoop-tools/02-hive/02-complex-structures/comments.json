@@ -1,0 +1,4 @@
+{ "idBlog" : "75584", "date" : "2015-12-20", "user" : "user1", "comment" : "me gusta el blog", "contact" : { "email" : "user1@gmail.com", "tlfn" : "91 661 12 33" } }
+{ "idBlog" : "75584", "date" : "2015-12-21", "user" : "user2", "comment" : "otro comentario en el mismo blog", "contact" : { "email" : "user2@gmail.com" } }
+{ "idBlog" : "75585", "date" : "2015-12-20", "user" : "user1", "comment" : "no me gusta el blog", "contact" : { "email" : "user1@gmail.com", "tlfn" : "91 661 12 33" } }
+{ "idBlog" : "75585", "date" : "2015-12-22", "user" : "user3", "comment" : "comentario en el otro blog" }
