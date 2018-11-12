@@ -1,0 +1,5 @@
+{ "nombre" : "Leonhard Paul" , "apellido" : "Euler" , "campos" : [ { "campo" : "física" } , { "campo" : "matemáticas" } ] , "nacimiento" : { "fecha" : "1973-09-18" , "ciudad" : "Basilea" , "pais" : "Suiza" } }
+{ "nombre" : "Johann Karl Friedrich" , "apellido" : "Gauss" , "campos" : [ { "campo" : "matemáticas" } , { "campo" : "astronomía" } , { "campo" : "geodesia" } , { "campo" : "física" } ] , "nacimiento" : { "fecha" : "1777-04-30" , "ciudad" : "Brunswick" , "pais" : "Alemania" } }
+{ "nombre" : "Giuseppe Lodovico" , "apellido" : "Lagrange" , "campos" : [ { "campo" : "física" } , { "campo" : "matemáticas" } , { "campo" : "astronomía" } ] , "nacimiento" : { "fecha" : "1736-01-25" , "ciudad" : "Turín" , "pais" : "Italia" } }
+{ "nombre" : "Werner" , "apellido" : "Heisenberg" , "campos" : [ { "campo" : "física" } ] , "nacimiento" : { "fecha" : "1901-12-05" , "ciudad" : "Wurzburgo" , "pais" : "Alemania" } }
+{ "nombre" : "Roger" , "apellido" : "Penrose" , "campos" : [ { "campo" : "física" } , { "campo" : "matemáticas" } ] , "nacimiento" : { "fecha" : "1931-08-08" , "ciudad" : "Colchester" , "pais" : "Inglaterra" } }
