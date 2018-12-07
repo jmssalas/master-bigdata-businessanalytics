@@ -37,7 +37,7 @@ else
 	echo ""
 fi
 
-let TOTAL_TIME=45
+let TOTAL_TIME=600
 let SLEEP_TIME=15
 let MAX_INSTANCES=5
 
@@ -52,40 +52,46 @@ do
 	then 
 
 		echo "Getting the active instances..."
-		ACTIVE_INSTANCES=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
-		AMOUNT_ACTIVE_INSTANCES=$(echo $ACTIVE_INSTANCES | wc -l)
+		AMOUNT_ACTIVE_INSTANCES=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text | wc -l)
 		echo "There is/are $AMOUNT_ACTIVE_INSTANCES active instance/s"
 		echo ""
 
 		echo "Getting machine's status..."
-		let STATUS=$(expr $(expr $(expr $AMOUNT + 9)/10) - $AMOUNT_ACTIVE_INSTANCES)
+		let STATUS=$(( (($AMOUNT + 9)/10) - $AMOUNT_ACTIVE_INSTANCES ))
 
-		if [ $STATUS -lt 0 ]
+		if [ $STATUS -eq 0 ]
 		then
-			echo "A instance has to be deleted"
-			echo "Getting a instance..."
-			INSTACE_TO_DELETE=$(echo $ACTIVE_INSTANCES | head -1)
-			
-			echo "Deleting the $INSTACE_TO_DELETE instance..."
-			aws ec2 terminate-instances --instance-id $INSTACE_TO_DELETE
-			echo "$INSTACE_TO_DELETE has been deleted"
-		else
-			if [ $AMOUNT_ACTIVE_INSTANCES -eq $MAX_INSTANCES ]
-			then
-				echo "Create a new instance is not possible. There are already $MAX_INSTANCES instances."
-			else
-				echo "Creating a new instance..."
-				aws ec2 run-instances --image-id ami-09f0b8b3e41191524 --count 1 --instance-type t2.micro --key-name "MasterKey" --security-group-ids sg-015c48f6955832223 --subnet-id subnet-030f2245d3fd3c167 --instance-initiated-shutdown-behavior terminate --associate-public-ip-address --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=TestInstance}]'
-				
-				if [ `echo $?` -ne 0 ]
-				then
-					echo "There was a problem creating the new instance."
-				else
-					echo "A new instance has been created."
-				fi
-			fi
-			
+			echo "The machine's status is OK."
 			echo ""
+		else
+			if [ $STATUS -lt 0 ]
+			then
+				echo "A instance has to be deleted"
+				echo "Getting a instance..."
+				INSTACE_TO_DELETE=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text | head -1)
+				
+				echo "Deleting the $INSTACE_TO_DELETE instance..."
+				aws ec2 terminate-instances --instance-id $INSTACE_TO_DELETE
+				echo "$INSTACE_TO_DELETE has been deleted"
+				echo ""
+			else
+				if [ $AMOUNT_ACTIVE_INSTANCES -eq $MAX_INSTANCES ]
+				then
+					echo "Create a new instance is not possible. There are already $MAX_INSTANCES instances."
+				else
+					echo "Creating a new instance..."
+					aws ec2 run-instances --image-id ami-09f0b8b3e41191524 --count 1 --instance-type t2.micro --instance-initiated-shutdown-behavior terminate
+					
+					if [ `echo $?` -ne 0 ]
+					then
+						echo "There was a problem creating the new instance."
+					else
+						echo "A new instance has been created."
+					fi
+				fi
+				
+				echo ""
+			fi
 		fi
 	else
 		echo "There is no message in the queue."
