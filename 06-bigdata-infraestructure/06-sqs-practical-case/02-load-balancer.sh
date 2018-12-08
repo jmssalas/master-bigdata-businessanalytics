@@ -55,9 +55,14 @@ do
 		AMOUNT_ACTIVE_INSTANCES=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text | wc -l)
 		echo "There is/are $AMOUNT_ACTIVE_INSTANCES active instance/s"
 		echo ""
+		
+		echo "Getting the pending instances..."
+		AMOUNT_PENDING_INSTANCES=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=pending" --query 'Reservations[*].Instances[*].InstanceId' --output text | wc -l)
+		echo "There is/are $AMOUNT_PENDING_INSTANCES pending instance/s"
+		echo ""
 
 		echo "Getting machine's status..."
-		let STATUS=$(( (($AMOUNT + 9)/10) - $AMOUNT_ACTIVE_INSTANCES ))
+		let STATUS=$(( (($AMOUNT + 9)/10) - (($AMOUNT_ACTIVE_INSTANCES + $AMOUNT_PENDING_INSTANCES)) ))
 
 		if [ $STATUS -eq 0 ]
 		then
@@ -75,7 +80,7 @@ do
 				echo "$INSTACE_TO_DELETE has been deleted"
 				echo ""
 			else
-				if [ $AMOUNT_ACTIVE_INSTANCES -eq $MAX_INSTANCES ]
+				if [ $(($AMOUNT_ACTIVE_INSTANCES + $AMOUNT_PENDING_INSTANCES)) -ge $MAX_INSTANCES ]
 				then
 					echo "Create a new instance is not possible. There are already $MAX_INSTANCES instances."
 				else
