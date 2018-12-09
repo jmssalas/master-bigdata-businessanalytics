@@ -1,0 +1,23 @@
+FLUSHALL
+
+LPUSH list1 "item1"
+
+LPUSH list1 "item2"
+
+LPUSH list1 "item3"
+
+LLEN list1
+
+LINDEX list1 2
+
+LPOP list1
+
+RPOP list1
+
+LPUSH list1 "item1"
+
+LPUSH list1 "item2"
+
+LPUSH list1 "item3"
+
+LRANGE list1 0 -1

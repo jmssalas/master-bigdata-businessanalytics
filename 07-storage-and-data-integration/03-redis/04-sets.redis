@@ -1,0 +1,23 @@
+FLUSHALL
+
+SADD set1 elem1 elem2 elem3
+
+SADD set2 elem1 elem4 elem5 elem6
+
+SINTER set1 set2
+
+SDIFF set1 set2
+
+SUNION set1 set2
+
+SCARD set1
+
+SMEMBERS set1
+
+SRANDMEMBER set1 2
+
+SISMEMBER set1 elem5
+
+SREM set1 elem3
+
+SMEMBERS set1

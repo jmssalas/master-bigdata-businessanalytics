@@ -1,0 +1,35 @@
+FLUSHALL
+
+SET example "this is an example"
+
+GET example
+
+KEYS *
+
+MSET key1 "hello" key2 "goodbye"
+
+MGET key1 key2
+
+SET expir "example 1"
+
+EXPIRE expir 10
+
+TTL expir
+
+SET expir "example 1"
+
+EXPIRE expir 10
+
+TTL expir
+
+SET value 150
+
+INCR value
+
+INCRBY value -5
+
+DECR value
+
+DECRBY value -6
+
+GET value

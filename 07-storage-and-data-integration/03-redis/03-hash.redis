@@ -1,0 +1,17 @@
+FLUSHALL
+
+HSET table1 field1 345
+
+HMSET table1 field2 "hello" field3 3456
+
+HGET table1 field2
+
+HMGET table1 field2 field1
+
+HGETALL table1
+
+HKEYS table1
+
+HVALS table1
+
+HINCRBY table1 field1 3

@@ -1,0 +1,37 @@
+FLUSHALL
+
+MSET name1 "Juan Gallardo López" email1 "jgl@gmail.com"
+
+MSET name2 "Isabel Sanz Alonso" email2 "isa10@gmail.com"
+
+MSET name3 "Pepe Azul Tellez" email3 "pazte@gmail.com"
+
+MGET email2 name3
+
+MSET age1 34 age2 36 age3 40
+
+DECRBY age2 4
+
+LPUSH list "Id:3434"
+
+LPUSH list "Name: Antonio Sancho García"
+
+LPUSH list "Age: 34"
+
+HMSET film name "ET. El extraterreste" year 1982 genre "Fiction" long 115
+
+HKEYS film
+
+HVALS film
+
+SADD colors1 blue yellow red green grey black
+
+SADD colors2 brown black pink blue white
+
+SUNION colors1 colors2
+
+SDIFF colors1 colors2
+
+ZADD sorted 100 "elem1" 90 "elem2" 23 "elem3" 300 "elem4" 99 "elem5" 12 "elem6"
+
+ZRANGE sorted 0 6 WITHSCORES

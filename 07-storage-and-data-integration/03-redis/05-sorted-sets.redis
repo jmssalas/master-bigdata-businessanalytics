@@ -1,0 +1,21 @@
+FLUSHALL
+
+ZADD cord1 1 "car" 2 "bicycle" 2 "motorbike" 3 "bus"
+
+ZRANGE cord1 0 2
+
+ZREVRANGE cord1 0 2
+
+ZRANGE cord1 0 2 WITHSCORES
+
+ZSCORE cord1 "motorbike"
+
+ZRANK cord1 "motorbike"
+
+ZREVRANK cord1 "motorbike"
+
+ZRANGE cord1 0 3 WITHSCORES
+
+ZREM cord1 "motorbike"
+
+ZRANGE cord1 0 3 WITHSCORES

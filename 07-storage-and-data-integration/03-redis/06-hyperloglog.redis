@@ -1,0 +1,13 @@
+FLUSHALL
+
+PFADD example1 "car" 345 "night"
+
+PFCOUNT example1
+
+PFADD example2 "bus" 123 "day"
+
+PFCOUNT example1
+
+PFMERGE total example1 example2
+
+PFCOUNT total
