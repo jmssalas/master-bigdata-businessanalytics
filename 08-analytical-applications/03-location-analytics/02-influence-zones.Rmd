@@ -1,0 +1,74 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - Influence Zones Calculation"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+In this exercise, we are going to learn how to calculate the geographic center of a polygon and also how to calculate its adjacent polygons.
+
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal')
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos')
+
+library(rgdal)
+library(rgeos)
+```
+
+
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+```
+
+```{r}
+# We are going to calculate the London geographic center
+
+# Localizate the City of London
+sel <- i_data_gs$name == "City of London"
+
+# Calculate its Centroid
+cent_i_data_gs <- gCentroid(i_data_gs[sel, ])
+
+# Plot all data
+plot(i_data_gs, col = "grey")
+points(cent_i_data_gs, cex = 1, col = "yellow")
+```
+
+```{r}
+# Now, we are going to calculate the geographic center of all of cities
+cent_i_data_all_gs <- gCentroid(i_data_gs)
+# Plot all data
+plot(i_data_gs, col = "grey")
+points(cent_i_data_gs, cex = 0.5, col = "yellow")
+points(cent_i_data_all_gs, cex = 1, col = "green")
+```
+
+```{r}
+# Let's select all zones what its centroid is near than 10km from the London centroid.
+i_data_gs_buffer <- gBuffer(spgeom = cent_i_data_gs, width = 10000) # 10000 = 10km
+i_data_gs_central <- i_data_gs[i_data_gs_buffer,]
+
+# Plot the completed graph
+plot(i_data_gs, col = "grey")
+plot(i_data_gs_central, col = "lightblue", add = T)
+plot(i_data_gs_buffer, add = T)
+text(coordinates(cent_i_data_gs), "Londres\nCentral")
+```

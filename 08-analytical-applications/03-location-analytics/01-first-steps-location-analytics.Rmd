@@ -1,0 +1,97 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - First Steps with Location Analytics"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal')
+
+library(rgdal)
+```
+
+
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+
+# Print class
+print(class(i_data_gs))
+``` 
+
+
+
+```{r}
+# Print structure of data
+print(str(i_data_gs))
+``` 
+
+
+
+
+```{r}
+#Display @data, that does not contain geographic data
+head(i_data_gs@data)
+``` 
+
+
+```{r}
+# Check the dataframe @data's structure
+str(i_data_gs@data)
+``` 
+
+```{r}
+# Pop_2001 is a factor value. Let's change it to number
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+str(i_data_gs@data)
+``` 
+
+
+```{r}
+# Plot the object
+plot(i_data_gs)
+``` 
+
+
+
+```{r}
+# Plot @data
+plot(i_data_gs@data)
+```
+
+
+```{r}
+# Let's select data of some zone that the participation is: 20-25%
+sel <- i_data_gs@data$Partic_Per > 20 & i_data_gs@data$Partic_Per < 25
+plot(i_data_gs[sel,])
+```
+
+
+```{r}
+# Let's plot with colour
+plot(i_data_gs, col = "lightgrey")
+```
+
+
+
+```{r}
+plot(i_data_gs, col = "lightgrey")
+# Let's plot with several colours
+sel <- i_data_gs@data$Partic_Per > 25
+plot(i_data_gs[sel,], col = "orange", add = TRUE)
+```
+
