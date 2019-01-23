@@ -6,61 +6,55 @@ output:
   pdf_document: default
 ---
 
-```{r}
-
-```
 
 ```{r}
-
-```
-
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
-```
-
-```{r}
-
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
 ```
 
 
 ```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
 
+if (!is.installed('rgdal')) 
+  install.packages('rgdal')
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos')
+
+library(rgdal)
+library(rgeos)
 ```
 
 ```{r}
-
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
 ```
 
 ```{r}
+# Creation of new geospatial data: 3 Points
+df <- data.frame(x = 1:3, y = c(1/2, 2/3, 3/4))
 
+# With these points, let's create a SpatialPoints
+spl <- SpatialPoints(coords = df)
+str(spl)
 ```
 
 ```{r}
+# Let's create a EPSG codes list
+EPSG <- make_EPSG()
 
+# Search WGS 84 code
+EPSG[grepl("WGS 84$", EPSG$note),]
 ```
 
-```{r}
-
-```
-
 
 ```{r}
-
-```
-
-```{r}
-
+# Create a new version of i_data_gs in the WGS84 projection
+i_data_gs84 <- spTransform(i_data_gs, CRS("+init=epsg:4326"))
+saveRDS(object = i_data_gs84, file = "data/i_data_gs84.Rds")
 ```

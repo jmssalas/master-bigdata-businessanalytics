@@ -1,0 +1,108 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - Spatial Data Union"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal', dependencies = T)
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos', dependencies = T)
+
+if (!is.installed('tmap')) 
+  install.packages('tmap', dependencies = T)
+
+library(rgdal)
+library(rgeos)
+library(tmap) 
+```
+
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+
+# Get transport infraestructure spatial data
+stations <- readOGR(dsn = "data", layer = "lnd-stns")
+```
+
+
+```{r}
+# Get the CRS data from stations
+proj4string(stations)
+
+# Get the CRS data from districts
+proj4string(i_data_gs)
+```
+
+
+```{r}
+# To transform stations data projecting them through CRS districts information 
+stations <- spTransform(stations, CRSobj = CRS(proj4string(i_data_gs)))
+proj4string(stations)
+```
+
+
+```{r}
+# Display both object
+plot(i_data_gs)
+points(stations)
+```
+
+
+```{r}
+# As station's points overlap the districts. However, district's extension is bigger than stations. For that, get only the stations which are in London's districts
+stations <- stations[i_data_gs,]
+
+# Display both object
+plot(i_data_gs)
+points(stations)
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+

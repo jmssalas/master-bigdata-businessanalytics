@@ -1,0 +1,132 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - New Business Openning Analytics"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal', dependencies = T)
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos', dependencies = T)
+
+if (!is.installed('tmap')) 
+  install.packages('tmap', dependencies = T)
+
+library(rgdal)
+library(rgeos)
+library(tmap) 
+```
+
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+```
+
+
+```{r}
+# Get London gyms
+gym_data <- read.csv2("data/LondonGyms.csv")
+str(gym_data)
+# id_gym -> gym code
+# type_gym -> gym type
+# name -> district name where gym is located
+gym_data
+```
+
+
+```{r}
+# Get the Fitness Centers
+gym_fitness <- gym_data[gym_data$type_gym == "Fitness Centers", ]
+
+# Aggregate gyms by district
+gym_ag <- aggregate(gym_fitness$id_gym, by = list(gym_fitness$name), FUN = length)
+colnames(gym_ag) <- c("name", "GymFitness")
+gym_ag
+```
+
+
+```{r}
+# Let's apply a left outer join to the spatial object
+gym_ag_data <- merge(i_data_gs@data, gym_ag, by="name", all.x = T)
+gym_ag_data
+```
+
+
+```{r}
+# There are NA values produced by left outer join. Thus, change NA to 0 values
+gym_ag_data$GymFitness[is.na(gym_ag_data$GymFitness)] <- 0
+gym_ag_data
+```
+
+
+```{r}
+# Now, let's get the fitness centers percentage of all people of city
+gym_ag_data$FitnessPerPob <- gym_ag_data$GymFitness / gym_ag_data$Pop_2001
+
+# Also, get the amount of gyms per city person using the mean of sport participation
+gym_ag_data$FitnessPerDep <- gym_ag_data$GymFitness / (gym_ag_data$Pop_2001) * (gym_ag_data$Partic_Per/100)
+
+gym_ag_data
+```
+
+
+```{r}
+# Let's create a new object that contains the same original data with the new data
+gym_fitness_gs <- merge(i_data_gs, gym_ag_data[, c(1, 5:7)], by = "name", all.x = TRUE)
+
+# Display the amount of fitness centers
+qtm(gym_fitness_gs, "GymFitness")
+
+# Display the amount of fitness centers per population
+qtm(gym_fitness_gs, "FitnessPerPob")
+
+# Display the amount of fitness centers per population that do sports
+qtm(gym_fitness_gs, "FitnessPerDep")
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
