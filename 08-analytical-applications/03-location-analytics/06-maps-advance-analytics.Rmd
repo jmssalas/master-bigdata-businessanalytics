@@ -1,0 +1,83 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - Maps Advance Analytics"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal', dependencies = T)
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos', dependencies = T)
+
+if (!is.installed('tmap')) 
+  install.packages('tmap', dependencies = T)
+
+if (!is.installed('OpenStreetMap')) 
+  install.packages('OpenStreetMap', dependencies = T)
+
+library(rgdal)
+library(rgeos)
+library(tmap) 
+library(OpenStreetMap)
+```
+
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+```
+
+```{r}
+# If we want to the graphs will not be static, comment the follow sentence
+tmap_mode("plot")
+```
+
+
+```{r}
+# Display the map to contrast the principal data included in the object
+qtm(shp = i_data_gs, fill = c("Partic_Per", "Pop_2001"), fill.palette = "Blues", ncol = 2)
+```
+
+
+```{r}
+# Let's test the tmap's potential to display several maps that are close between them
+tm_shape(i_data_gs) +
+  tm_fill("Pop_2001", thres.poly = 0) +
+  tm_facets("name", free.coords = F, drop.units = T) +
+  tm_layout(legend.show = T, title.position = c("center", "center"), title.size = 20)
+```
+
+
+```{r}
+# Uncomment the following sentence if you don't want to interactive graph
+tmap_mode("view")
+
+# All maps created before with qtm function can be created with tm_shape followed by tm_fill (or other tm_ function). At first, we have to transform data in to CRS geographic.
+i_data_gs_wgs <- spTransform(i_data_gs, CRS("+init=epsg:4326"))
+
+# To create a base map with tmap, read_osm function can be used
+osm_tiles <- tmaptools::read_osm(bbox(i_data_gs_wgs))
+
+# Now, print maps completely
+tm_shape(osm_tiles) +
+  tm_raster() +
+  tm_shape(i_data_gs_wgs) +
+  tm_fill("Pop_2001", fill.title = "Population 2001", scale = 0.8, alpha = 0.5) +
+  tm_layout(legend.position = c(0.89, 0.02))
+```

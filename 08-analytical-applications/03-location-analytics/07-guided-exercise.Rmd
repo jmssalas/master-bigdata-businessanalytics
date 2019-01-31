@@ -1,0 +1,203 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - Guided Exercise"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal', dependencies = T)
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos', dependencies = T)
+
+library(rgdal)
+library(rgeos)
+```
+
+
+
+
+## Read Madrid Data
+```{r}
+i_data_hotels1 <- readOGR(dsn = "data", layer = "hoteles1", encoding = "latin1")
+i_data_hotels2 <- readOGR(dsn = "data", layer = "hoteles2", encoding = "latin1")
+i_data_hotels3 <- readOGR(dsn = "data", layer = "hoteles3", encoding = "latin1")
+i_data_hotels4 <- readOGR(dsn = "data", layer = "hoteles4", encoding = "latin1")
+i_data_hotels5 <- readOGR(dsn = "data", layer = "hoteles5", encoding = "latin1")
+i_data_turismoffice <- readOGR(dsn = "data", layer = "oficinaturismo", encoding = "latin1")
+i_data_districts <- readOGR(dsn = "data", layer = "200001543", encoding = "latin1")
+```
+
+---
+
+## Data Preprocessing
+
+#### Union of hotels spatial data
+```{r}
+i_data_hotels <- rbind(i_data_hotels1,
+                       i_data_hotels2,
+                       i_data_hotels3,
+                       i_data_hotels4,
+                       i_data_hotels5)
+i_data_hotels
+```
+
+---
+
+#### Project data using EPSG code of Madrid
+```{r}
+EPSG <- make_EPSG()
+EPSG[grepl("Spain$", EPSG$note),]
+```
+
+
+```{r}
+# Project using the code 2062
+proj4string(i_data_hotels) <- CRS("+init=epsg:2062")
+proj4string(i_data_turismoffice) <- CRS("+init=epsg:2062")
+proj4string(i_data_districts) <- CRS("+init=epsg:2062")
+```
+
+
+```{r}
+i_data_hotels <- spTransform(i_data_hotels, proj4string(i_data_hotels))
+i_data_hotels@data
+```
+
+
+```{r}
+i_data_turismoffice <- spTransform(i_data_turismoffice, proj4string(i_data_turismoffice))
+i_data_turismoffice@data
+```
+
+
+```{r}
+i_data_districts <- spTransform(i_data_districts, proj4string(i_data_districts))
+i_data_districts@data
+```
+
+---
+
+#### Select districts of center of Madrid
+```{r}
+i_data_center <- i_data_districts[as.character(i_data_districts$GEOCODIGO) >= "079011" & as.character(i_data_districts$GEOCODIGO) <= "079052", ]
+
+# Initial visualization
+plot(i_data_center)
+points(i_data_hotels, cex = 0.5)
+points(i_data_turismoffice, cex = 1, pch = 19)
+```
+
+
+---
+
+#### Spatial join to get only the turism offices that stay in the center districts of Madrid
+```{r}
+i_data_hotels_center <- i_data_hotels[i_data_center,]
+i_data_turismoffice_center <- i_data_turismoffice[i_data_center,]
+
+# Visualization
+plot(i_data_center)
+points(i_data_hotels_center, cex = 0.5)
+points(i_data_turismoffice_center, cex = 1, pch = 19)
+```
+
+
+
+---
+
+## Insight Collecting
+
+#### Influence zone of current turism offices of center of Madrid collection
+```{r}
+# Influence zone of turism office: 500 metres
+i_inf_turismoffice <- gBuffer(spgeom = i_data_turismoffice_center, width = 500)
+
+# Visualization
+plot(i_data_center)
+plot(i_inf_turismoffice, add = T)
+points(i_data_hotels_center, cex = 0.5)
+points(i_data_turismoffice_center, cex = 1, pch = 19)
+```
+
+---
+
+#### Spatial Filtering
+```{r}
+# Let's get only the hotels into influence zone
+i_data_hotels_center_office <- i_data_hotels[i_inf_turismoffice, ]
+
+# Visualization
+plot(i_data_center)
+plot(i_inf_turismoffice, add = T)
+points(i_data_hotels_center, cex = 0.5)
+points(i_data_hotels_center_office, cex = 0.1)
+# points(i_data_turismoffice_center, cex = 1, pch = 19)
+```
+
+
+```{r}
+# Let's get only the hotels out the influence zone
+sel_label_turismoffice <- i_data_hotels_center_office$ETIQUETA
+sel_label_no_turismoffice <- is.element(i_data_hotels_center$ETIQUETA, sel_label_turismoffice)
+i_data_hotels_center_no_office <- i_data_hotels_center[!sel_label_no_turismoffice, ]
+
+# Visualization
+plot(i_data_center)
+plot(i_inf_turismoffice, add = T)
+points(i_data_hotels_center_no_office, cex = 0.5)
+# points(i_data_turismoffice_center, cex = 1, pch = 19)
+```
+
+
+---
+
+#### Let's make a segmentation with the coordinates of the hotels out of influence zone
+```{r}
+# Clustering above spatial coordinates
+set.seed(44)
+segmentation <- kmeans(i_data_hotels_center_no_office@coords, 4)
+str(segmentation)
+```
+
+```{r}
+# Centers of segmentation
+segmentation$centers
+```
+
+
+```{r}
+# Convert the centers of segmentation to spatial points and project them
+segment_esp <- SpatialPoints(coords = segmentation$centers)
+proj4string(segment_esp) <- CRS("+init=epsg:2062")
+segment_esp <- spTransform(segment_esp, proj4string(segment_esp))
+str(segment_esp)
+```
+
+
+
+---
+
+## Results presentation
+```{r}
+plot(i_data_center)
+plot(i_inf_turismoffice, add = T)
+points(i_data_hotels_center_no_office, cex = 1, pch = 19, col = segmentation$cluster)
+points(i_data_turismoffice_center, cex = 1, pch = 19)
+points(segment_esp, cex = 2, pch = 19)
+```
