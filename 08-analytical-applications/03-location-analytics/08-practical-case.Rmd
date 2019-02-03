@@ -1,0 +1,166 @@
+---
+title: "Consumer Behaviour Analytics Tutorial - Practical Case"
+output:
+  html_notebook: default
+  html_document: default
+  pdf_document: default
+---
+
+# Statement
+
+Using `data/LondonCustomer.csv` which contains the following information of the clients of a London bank:
+
+- CONTACT_ID: client ID.
+- AGE: age.
+- FAMILYSIZE: family size.
+- YEAREXPERIENCE: year of experience.
+- ANNUALINCOME: annual income.
+- EDUCATIONLEVEL_ID: education level ID.
+- NETPRICE_PRO11_AMT: total consume of PRO11 product.
+- NETPRICE_PRO12_AMT: total consume of PRO12 product.
+- NETPRICE_PRO13_AMT: total consume of PRO13 product.
+- NETPRICE_PRO14_AMT: total consume of PRO14 product.
+- NETPRICE_PRO15_AMT: total consume of PRO15 product.
+- NETPRICE_PRO16_AMT: total consume of PRO16 product.
+- NETPRICE_PRO17_AMT: total consume of PRO17 product.
+- name: office's name of London district where it belongs.
+
+With `data/London_sports` data the following business cases have to be resolved:
+
+**Section 1**. Company has 33 offices in London, each one per district, and in light of lack of profitability it need close three of these offices. Company has decided that it will do it with offices which has a lower business volume (sum of all products's consume) of clients lower than 55 years.
+
+**Section 2**. Also, Company wants to know, for each closed districts, if there is an office or offices locate in a near district where it can move the clients if it is necessary. For that, it is considered that the offices are geolocated in the center of the its districts.
+
+
+---
+
+# 0. Read Data
+
+#### 0.0. Clean all and import libraries
+```{r}
+# Clear all object
+rm(list=ls())
+# Set working directory
+setwd("/home/jmssalas/git/master-bigdata-businessanalytics/08-analytical-applications/03-location-analytics")
+```
+
+
+```{r}
+# Import needed libraries
+is.installed <- function(package) is.element(package, installed.packages())
+
+if (!is.installed('rgdal')) 
+  install.packages('rgdal', dependencies = T)
+
+if (!is.installed('rgeos')) 
+  install.packages('rgeos', dependencies = T)
+
+if (!is.installed('tmap')) 
+  install.packages('tmap', dependencies = T)
+
+if (!is.installed('OpenStreetMap')) 
+  install.packages('OpenStreetMap', dependencies = T)
+
+library(rgdal)
+library(rgeos)
+library(tmap) 
+library(OpenStreetMap)
+```
+
+
+#### 0.1 From LondonCustomer CSV
+```{r}
+london_customer <- read.csv("data/LondonCustomer.csv", sep = ";", header = T)
+london_customer
+```
+
+---
+
+#### 0.2. From London Sport SHP file
+```{r}
+# Get London data in SHP format
+i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
+i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
+i_data_gs@data
+```
+
+---
+
+# Section 1.
+
+#### 1.1. Get the clients which has a age lower than 55
+```{r}
+clients_lower_55 <- london_customer[london_customer$AGE < 55, ]
+max(clients_lower_55$AGE)
+clients_lower_55
+```
+
+---
+
+#### 1.1. Get the sum of all products's consume
+```{r}
+# Products
+products <- c("NETPRICE_PRO11_AMT", "NETPRICE_PRO12_AMT", "NETPRICE_PRO13_AMT", "NETPRICE_PRO14_AMT", "NETPRICE_PRO15_AMT", "NETPRICE_PRO16_AMT", "NETPRICE_PRO17_AMT")
+
+# Get the sum
+clients_lower_55$SUM_CONSUME <- rowSums(clients_lower_55[, products])
+```
+
+We get this error because one of the products is not a numeric value. Let's use the `str()` function to discover it:
+```{r}
+str(clients_lower_55[, products])
+# Let's see the factor's levels
+levels(clients_lower_55$NETPRICE_PRO14_AMT)
+```
+
+As we can see, the `NETPRICE_PRO14_AMT` column is not a numeric value. So, we have to convert this factor value to numeric value, using first `gsub()` function to replace `,` to `.`.
+```{r}
+clients_lower_55$NETPRICE_PRO14_AMT <- as.double(gsub(",", ".", clients_lower_55$NETPRICE_PRO14_AMT))
+str(clients_lower_55[, products])
+```
+
+
+Now, we can already make the sum of all products
+```{r}
+clients_lower_55$SUM_CONSUME <- rowSums(clients_lower_55[, products])
+clients_lower_55[,c(products, "SUM_CONSUME")]
+```
+
+
+---
+
+#### 1.2. Get the three offices which have a lower business volume
+
+```{r}
+# Import dplyr library
+library(dplyr)
+
+# Get the sum of all product's consumes of all clients of each districts
+clients_lower_55 %>%
+  group_by(name) %>%
+  summarise(SUM_CONSUME = sum(SUM_CONSUME)) %>%
+  arrange(SUM_CONSUME)
+```
+
+---
+
+With that, we can say that the three offices which have a lower business volume are: 
+
+- City of London
+- Wandsworth
+- Ealing
+
+
+
+---
+
+# Section 2
+```{r}
+
+```
+
+
+```{r}
+
+```
+
