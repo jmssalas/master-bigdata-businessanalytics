@@ -1,9 +1,9 @@
 ---
 title: "Consumer Behaviour Analytics Tutorial - Practical Case"
 output:
-  html_notebook: default
   html_document: default
   pdf_document: default
+  html_notebook: default
 ---
 
 # Statement
@@ -71,7 +71,7 @@ library(OpenStreetMap)
 #### 0.1 From LondonCustomer CSV
 ```{r}
 london_customer <- read.csv("data/LondonCustomer.csv", sep = ";", header = T)
-london_customer
+head(london_customer)
 ```
 
 ---
@@ -81,7 +81,7 @@ london_customer
 # Get London data in SHP format
 i_data_gs <- readOGR(dsn = "data", layer = "london_sport")
 i_data_gs@data$Pop_2001 <- as.numeric(as.character(i_data_gs@data$Pop_2001))
-i_data_gs@data
+head(i_data_gs@data)
 ```
 
 ---
@@ -92,7 +92,7 @@ i_data_gs@data
 ```{r}
 clients_lower_55 <- london_customer[london_customer$AGE < 55, ]
 max(clients_lower_55$AGE)
-clients_lower_55
+head(clients_lower_55)
 ```
 
 ---
@@ -101,12 +101,9 @@ clients_lower_55
 ```{r}
 # Products
 products <- c("NETPRICE_PRO11_AMT", "NETPRICE_PRO12_AMT", "NETPRICE_PRO13_AMT", "NETPRICE_PRO14_AMT", "NETPRICE_PRO15_AMT", "NETPRICE_PRO16_AMT", "NETPRICE_PRO17_AMT")
-
-# Get the sum
-clients_lower_55$SUM_CONSUME <- rowSums(clients_lower_55[, products])
 ```
 
-We get this error because one of the products is not a numeric value. Let's use the `str()` function to discover it:
+Let's use the `str()` function to discover the products values:
 ```{r}
 str(clients_lower_55[, products])
 # Let's see the factor's levels
@@ -123,7 +120,7 @@ str(clients_lower_55[, products])
 Now, we can already make the sum of all products
 ```{r}
 clients_lower_55$SUM_CONSUME <- rowSums(clients_lower_55[, products])
-clients_lower_55[,c(products, "SUM_CONSUME")]
+head(clients_lower_55[,c(products, "SUM_CONSUME")])
 ```
 
 
@@ -155,12 +152,90 @@ With that, we can say that the three offices which have a lower business volume 
 ---
 
 # Section 2
+As we assume that the offices are geolocated in the center of its districts, we are going to get the centroid of each closed office:
 ```{r}
+# Set the closed offices
+closed_offices <- c("City of London", "Wandsworth", "Ealing")
+
+# Get its information
+i_data_closed_offices <- i_data_gs[is.element(i_data_gs@data$name, closed_offices), ]
+
+# Get the Centroid of these offices
+cent_closed_offices <- gCentroid(i_data_closed_offices, byid = T,  id = closed_offices)
+
+# Plot the location of theses offices
+plot(i_data_gs, col = "lightgrey")
+plot(i_data_closed_offices, add = T, col = "orange")
+points(cent_closed_offices, cex = 0.5, col = "black", pch = 19)
+```
+
+
+Now, we are going to get what open offices are near to the closed offices. For that, we are going to assume that a office is near to other if there are 5km between them. First at all, let's get the centroids of all open offices.
+```{r}
+# Get all districts where Company has its offices
+districts <- unique(london_customer$name)
+
+# Remove closed offices
+open_offices <- districts[!districts %in% closed_offices]
+
+# Get its information
+i_data_open_offices <- i_data_gs[is.element(i_data_gs@data$name, open_offices), ]
+
+# Get the Centroid of these offices
+cent_open_offices <- gCentroid(i_data_open_offices, byid = T,  id = open_offices)
+```
+
+
+Now, for each closed offices (using its centroid), we are going to get the near open offices:
+```{r}
+near_offices = list()
+
+for (closed in closed_offices)
+{
+  # Get information of the closed office
+  i_data_closed_office <- i_data_gs[i_data_gs@data$name == closed, ]
+  
+  # Get the Centroid of that office
+  centroid <- gCentroid(i_data_closed_office)
+  
+  # Get the buffer with 5km from each closed office
+  i_data_closed_offices_buffer <- gBuffer(spgeom = centroid, width = 5000)
+  
+  # Get the open offices inside the buffer
+  cent_open_offices_inside_buffer <- cent_open_offices[i_data_closed_offices_buffer, ]
+  
+  # Plot the completed graph
+  plot(i_data_gs, col = "lightgrey")
+  plot(i_data_closed_offices, add = T, col = "orange")
+  plot(i_data_closed_offices_buffer, add = T)
+  points(centroid, cex = 0.5, col = "black", pch = 19)
+  points(cent_open_offices_inside_buffer, cex = 0.5, col = "black", pch = 19)
+  legend("topleft", legend = closed)
+  
+  # Storage the open offices near to closed office
+  near_offices[[closed]] <- rownames(cent_open_offices_inside_buffer@coords)
+}
 
 ```
 
 
+With that, we already have the offices near to each closed office: 
 ```{r}
-
+near_offices
 ```
 
+The offices which are open near to the closed offices are:
+
+- City of London:
+    * Bexley
+    * Kingston upon Thames
+    * Brent
+    * Hammersmith and Fulham
+    * Hounslow
+
+- Wandsworth:
+    * Redbridge
+    * Westminster
+
+- Ealing:
+    * None
