@@ -58,9 +58,9 @@ headsepline, % Uncomment to get a line under the header
 \setlist[enumerate]{label*=\arabic*.}
 
 \usepackage[square,numbers]{natbib}
-\bibliographystyle{unsrtnat}
-% \setcitestyle{authoryear}
-% \bibliographystyle{dinat}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
+% \citep{biopac}
 
 \usepackage{amsmath}
 % \usepackage[spanish,onelanguage,ruled]{algorithm2e} % for algorithm pseudocode
@@ -86,11 +86,11 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Análisis de productos químicos en cosméticos} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
-\supervisor{\textsc{Juan Manuel Moreno Lamparero}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
+\thesistitle{Análisis de productos químicos \\ en cosméticos} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\supervisor{\textsc{Juan Manuel \\ Moreno Lamparero}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
-\degree{Máster en Big Data \& Business Analytics} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
-\author{\textsc{José María Sánchez Salas}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
+\degree{Máster en \\ Big Data \& Business Analytics} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
+\author{\textsc{José María \\ Sánchez Salas}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
 % \newcommand{\mention}{Mención: Computación}
 \addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
 
@@ -129,16 +129,16 @@ headsepline, % Uncomment to get a line under the header
 \begin{center}
 
 \vspace*{.06\textheight}
-{\scshape\LARGE \univname\par}\vspace{1cm} % University name
+{\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
 \vspace{10mm}% \includegraphics[scale=0.7]{umu-logo}\\\vspace{1cm} 
-{\scshape\huge \degreename\par} \vspace{0.5cm} % Degree name 
+{\scshape\huge \degreename\par} \vspace{1.5cm} % Degree name 
 % {\scshape\Large \mention\par}\vspace{1cm} % Mention name
 \textsc{\LARGE Trabajo Fin de Máster}\\[0.5cm] % Thesis type
 
 \vspace{10mm}
 \HRule \\[0.4cm] % Horizontal line
 {\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
-\HRule \\[1.5cm] % Horizontal line
+\HRule \\[2.5cm] % Horizontal line
  
 \begin{minipage}[t]{0.4\textwidth}
 \begin{flushleft} \large
@@ -146,12 +146,12 @@ headsepline, % Uncomment to get a line under the header
 \authorname % Author name - remove the \href bracket to remove the link
 \end{flushleft}
 \end{minipage}
-\begin{minipage}[t]{0.5\textwidth}
+\begin{minipage}[t]{0.4\textwidth}
 \begin{flushright} \large
 \emph{Tutor:} \\
 \supname % Supervisor name - remove the \href bracket to remove the link  
 \end{flushright}
-\end{minipage}\\[2cm]
+\end{minipage}\\[1.5cm]
  
 \vfill
 
