@@ -7,6 +7,7 @@
 %------------------------------------------------    
 \section{Introducción}
 
+En esta sección se detallará, en primer lugar, el dataset utilizado para el desarrollo de este trabajo, la descripción de sus características y la selección de las características más importantes. En segundo lugar, se detallarán los métodos y técnicas que se han aplicado al dataset para conseguir los objetivos de este trabajo.
 
 
 
@@ -14,6 +15,7 @@
 
 %------------------------------------------------    
 \section{Material}
+\label{sec:material}
 
 Para la realización de este trabajo se ha hecho uso del dataset público \tabhead{Chemicals in Cosmetics} \citep{dataset} proporcionado por \tabhead{HealthData} \citep{healthdata}. \\
 
@@ -30,6 +32,7 @@ El CSCP mantiene un sistema de informes \textit{online} para que las empresas in
 
 %------------------------------------------------    
 \subsection{Descripción del dataset}
+\label{sec:dataset-description}
 
 El dataset proporcionado por el CSCP es un dataset en formato CSV con un histórico desde el año 2009 y que se va actualizando cada 3 o 4 días. En las fechas de realización de este trabajo (última fecha reportada: 21/02/2019), el dataset consta de:
 
@@ -39,6 +42,36 @@ El dataset proporcionado por el CSCP es un dataset en formato CSV con un histór
 \end{itemize}
 
 En la Tabla \ref{tab:features} se describen cada una de las características. La agrupación de las características \code{CDPHId}, \code{CSFId}, \code{SubCategoryId} y \code{ChemicalId} forma la clave primaria de este dataset.
+
+
+%------------------------------------------------    
+\subsection{Selección de características importantes}
+
+No todas las características descritas en la Tabla \ref{tab:features} son necesarias para aplicar las técnicas descritas en la sección \ref{sec:methods} ya que algunas de ellas son informativas o no son relevantes a la hora de aplicar dichas técnicas. \\
+
+Se van a tener en cuenta todas las características de formato Fecha, exceptuando las características \code{DiscontinuedDate} y \code{ChemicalDateRemoved}, ya que solamente interesan aquellos productos que no hayan sido eliminados. Además, se van a utilizar las características \code{SubCategoryId} y \code{CASId}, pues son los identificadores de los cosméticos y los productos químicos, respectivamente. Se utiliza \code{SubCategoryId} en vez de \code{PrimaryCategoryId} debido a que la primera es más específica que la segunda y a partir de la primera se puede sacar la segunda (pues está contenido en ella). Y por supuesto, \code{ChemicalCount}, que indica la cantidad de productos químicos. \\
+
+Así pues, la Tabla \ref{tab:features-selection} muestra las características que se van a tener en cuenta:
+
+\begin{table}[!th]
+\begin{tabular}{@{}l@{}}
+\toprule
+Nombre                         \\ \midrule
+\code{SubCategoryId}           \\
+\code{CASId}                   \\
+\code{InitialDateReported}     \\
+\code{MostRecentDateReported}  \\ 
+\code{ChemicalCreatedAt}       \\
+\code{ChemicalUpdatedAt}       \\ 
+\code{ChemicalCount}           \\
+\bottomrule
+\end{tabular}
+\centering
+\caption{Selección de características importantes.}
+\label{tab:features-selection}
+\end{table}
+
+
 
 \begin{table}[]
 \begin{tabular}{@{}lll@{}}
@@ -74,74 +107,33 @@ Nombre                 & Formato & Definición \\ \midrule
 \end{table}
 
 
-
-
-
-
-
-
 \newpage
-%------------------------------------------------    
-\subsection{Selección de características importantes}
-
-No todas las características descritas en la Tabla \ref{tab:features} son necesarias para aplicar las técnicas descritas en la sección \ref{sec:methods} ya que algunas de ellas son informativas o no son relevantes a la hora de aplicar dichas técnicas. \\
-
-Se van a tener en cuenta todas las características de formato Fecha, exceptuando las características \code{DiscontinuedDate} y \code{ChemicalDateRemoved}, ya que solamente interesan aquellos productos que no hayan sido eliminados. Además, se van a utilizar las características \code{SubCategoryId} y \code{CASId}, pues son los identificadores de los cosméticos y los productos químicos, respectivamente. Se utiliza \code{SubCategoryId} en vez de \code{PrimaryCategoryId} debido a que la primera es más específica que la segunda y a partir de la primera se puede sacar la segunda (pues está contenido en ella). Y por supuesto, \code{ChemicalCount}, que indica la cantidad de productos químicos. \\
-
-Así pues, la Tabla \ref{tab:features-selection} muestra las características que se van a tener en cuenta:
-
-\begin{table}[!th]
-\begin{tabular}{@{}l@{}}
-\toprule
-Nombre                         \\ \midrule
-\code{SubCategoryId}           \\
-\code{CASId}                   \\
-\code{InitialDateReported}     \\
-\code{MostRecentDateReported}  \\ 
-\code{ChemicalCreatedAt}       \\
-\code{ChemicalUpdatedAt}       \\ 
-\code{ChemicalCount}           \\
-\bottomrule
-\end{tabular}
-\centering
-\caption{Selección de características importantes.}
-\label{tab:features-selection}
-\end{table}
-
-
-
-
-
-
-
-
 %------------------------------------------------    
 \section{Métodos}
 \label{sec:methods}
 
+Este trabajo se va a realizar utilizando el lenguaje de programación Python y como entorno de desarrollo Jupyter Notebook. Los métodos que se van a utilizar para la consecución de los objetivos descritos en la sección \ref{sec:goals} son:
 
 
+%------------------------------------------------    
+\subsection{Obtención del dataset}
 
-
-
-
-
-
-
-
+Como se ha comentado en la sección \ref{sec:material}, el dataset se haya ubicado en la plataforma HealthData y además es incremental \citep{dataset}, por lo que para obtener dicho dataset se va a hacer uso de la API \citep{healthdata-api} que proporciona HealhData. \\
 
 
 
 %------------------------------------------------    
 \subsection{Clustering}
-\label{sec:methods:subsec:clustering}
 
-
-
-
+Para poder obtener la clasificación de los productos químicos presentes en los cosméticos y encontrar qué productos químicos son más frecuentes, así como aquellos cosméticos que presentan mayor número de productos químicos, se van a aplicar técnicas de Clustering. Concretamente, se va a utilizar la implementación del algoritmo K-Means proporcionada por Scikit-learn \citep{scikit-learn}.
 
 
 
 %------------------------------------------------    
 \subsection{Forecasting}
-\label{sec:methods:subsec:forecasting}
+
+Para poder obtener la predicción de la cantidad de productos químicos que contendrán los futuros cosméticos, se van a aplicar técnicas de Forecasting. Concretamente, se va a utilizar la implementación del modelo ARIMA proporcionada por StatsModels \citep{arima}.
+
+
+
+
