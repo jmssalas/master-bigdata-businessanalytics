@@ -3,32 +3,85 @@
 \chapter{Material y métodos} % Main chapter title
 \label{chap:material-methods} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
 
-\section{Main Section 1}
+%------------------------------------------------    
+\section{Introducción}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
+
+
+%------------------------------------------------    
+\section{Material}
+Para la realización de este trabajo se ha hecho uso del dataset público \tabhead{Chemicals in Cosmetics} \citep{dataset} proporcionado por \tabhead{HealthData} \citep{healthdata}. \\
+
+Para todos los productos cosméticos vendidos en California, la Ley de Cosméticos Seguros de California requiere que el fabricante, empacador y/o distribuidor nombrado en la etiqueta del producto proporcione una lista al Programa de Cosméticos Seguros de California \textit{(California Safe Cosmetics Program (CSCP))} de todos los productos cosméticos que contengan cualquier ingrediente conocido o sospechoso de causar cáncer, defectos de nacimiento u otros daños al desarrollo o reproductivos. El CSCP mantiene una lista de ingredientes ``reportables''. Las compañías con ingredientes reportables en sus productos deben enviar información al Programa de Cosméticos Seguros de California si la compañía:
+
+\begin{itemize}
+ \item Tiene ventas anuales agregadas de productos cosméticos de un millón de dólares o más, y
+ \item Ha vendido productos cosméticos en California a partir del 1 de enero de 2007.
+\end{itemize}
+
+El CSCP mantiene un sistema de informes \textit{online} para que las empresas informen sobre productos e ingredientes reportables, generando así el dataset utilizado para este trabajo. Los datos reflejan información que ha sido reportada al CSCP. No se incluyen todos los productos que contengan carcinógenos o tóxicos para el desarrollo o la reproducción, debido a que las compañías no los informan.
+
+
+
+%------------------------------------------------    
+\subsection{Descripción del dataset}
+
+El dataset proporcionado por el CSCP es un dataset en formato CSV con un histórico desde el año 2009 y que se va actualizando cada 3 o 4 días. En las fechas de realización de este trabajo (última fecha reportada: 21/02/2019), el dataset consta de:
+
+\begin{itemize}
+ \item 97.760 registros.
+ \item 22 columnas.
+\end{itemize}
+
+A continuación, se describen cada una de las columnas:
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[]
+\begin{tabular}{@{}lll@{}}
+\toprule
+COLUMN NAME            & FORMAT     & DEFINITION                                                                                                                                                                                                                                                                                                                                                                                                                                                            \\ \midrule
+CDPHId                 & Plain text & The California Department of Public Health (CDPH) internal identification number for product. Note that the CDPHId may appear more than once if a product has more than one Color/Scent/Flavor, more than one Category, or more than one Chemical Name/CAS number reported.                                                                                                                                                                                           \\
+ProductName            & Plain text & Product name as entered by manufacturer, packer and/or distributor. The product name is entered as free-text into the reporting database and may contain misspellings or other errors.                                                                                                                                                                                                                                                                                \\
+CSFId                  & Plain text & CDPH internal identification number for a color/scent/flavor.                                                                                                                                                                                                                                                                                                                                                                                                         \\
+CSF                    & Plain text & Color, scent and/or flavor as entered by manufacturer, packer and/or distributor. The color/scent/flavor name is entered as free-text into the reporting database and may contain misspellings or other errors. Not all products have specific colors, scents or flavors.                                                                                                                                                                                             \\
+CompanyId              & Plain text & CDPH internal identification number for company.                                                                                                                                                                                                                                                                                                                                                                                                                      \\
+CompanyName            & Plain text & Company name as entered by manufacturer, packer and/or distributor. The company name is entered as free-text into the reporting database and may contain misspellings or other errors.                                                                                                                                                                                                                                                                                \\
+BrandName              & Plain text & Brand name as entered by manufacturer, packer and/or distributor. The brand name is entered as free-text into the reporting database and may contain misspellings or other errors.                                                                                                                                                                                                                                                                                    \\
+PrimaryCategoryId      & Plain text & CDPH internal identification number for category.                                                                                                                                                                                                                                                                                                                                                                                                                     \\
+PrimaryCategory        & Plain text & Type of product (13 primary categories: Baby Products, Bath Products, Fragrances, Hair Care Products (non-coloring), Hair Coloring Products, Makeup Products (non-permanent), Nail Products, Oral Hygiene Products, Personal Care Products, Shaving Products, Skin Care Products, Sun-Related Products, Tattoos and Permanent Makeup). See attachment for sub-categories within each primary category (Cosmetics-Chemicals-CA-CDPH-DataDictionary-Subcategories.csv). \\
+SubCategoryId          & Plain text & CDPH internal identification number for subcategory.                                                                                                                                                                                                                                                                                                                                                                                                                  \\
+SubCategory            & Plain text & Type of product within one of the 13 primary categories. See attachment for sub-categories within each primary category (Cosmetics-Chemicals-CA-CDPH-DataDictionary-Subcategories.xls).                                                                                                                                                                                                                                                                               \\
+CASId                  & Plain text & CDPH internal identification number for chemical.                                                                                                                                                                                                                                                                                                                                                                                                                     \\
+CasNumber              & Plain text & Chemical identification number (Chemical Abstracts Service registry number assigned to specific chemical). Note that different forms of a chemical  may have different CAS numbers. What appears here is the CAS number selected by the manufacturer, packer and/or distributor.                                                                                                                                                                                      \\
+ChemicalId             & Plain text & CDPH internal identification number for this chemical's record specific to this product.                                                                                                                                                                                                                                                                                                                                                                              \\
+ChemicalName           & Plain text & Name of chemical substance in cosmetic product. Note that chemical substances may have more than one Chemical Name. What appears here is the chemical name selected by the manufacturer, packer and/or distributor. The California Safe Cosmetics Act  requires cosmetics companies to report products containing ingredients known or suspected to cause cancer or developmental or reproductive harm.                                                               \\
+InitialDateReported    & Date       & Date the product profile was created by manufacturer, packer and/or distributor, that is, the date that the product was first reported to CDPH.                                                                                                                                                                                                                                                                                                                       \\
+MostRecentDateReported & Date       & Date the product profile was last modified by manufacturer, packer and/or distributor. The product profile contains all information about the product with the exception of chemical information, which is stored separately. This field defaults to the InitialDateReported value initially.                                                                                                                                                                         \\
+DiscontinuedDate       & Date       & If applicable, date the product was discontinued.                                                                                                                                                                                                                                                                                                                                                                                                                     \\
+ChemicalCreatedAt      & Date       & The date that this chemical was first reported to CDPH for this product.                                                                                                                                                                                                                                                                                                                                                                                              \\
+ChemicalUpdatedAt      & Date       & Date this chemical report was last modified by manufacturer, packer and/or distributor. This field is unique from the product profile. This field defaults to the ChemicalCreatedAt value initially.                                                                                                                                                                                                                                                                  \\
+ChemicalDateRemoved    & Date       & If applicable, date the chemical was removed from product, i.e., reformulation.                                                                                                                                                                                                                                                                                                                                                                                       \\
+ChemicalCount          & Number     & Total number of current chemicals reported for this product. This number does not include chemicals that have been removed from a product. This number is a calculated field based on current reporting.                                                                                                                                                                                                                                                              \\ \bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+
+
+\newpage
+
+%------------------------------------------------    
+\section{Métodos}
+
+
+
+
+%------------------------------------------------    
 \subsection{Subsection 1}
-
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
-
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
-
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
-
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
-
-\section{Main Section 2}
-
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
