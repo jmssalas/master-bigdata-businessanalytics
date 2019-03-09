@@ -10,8 +10,11 @@
 
 
 
+
+
 %------------------------------------------------    
 \section{Material}
+
 Para la realización de este trabajo se ha hecho uso del dataset público \tabhead{Chemicals in Cosmetics} \citep{dataset} proporcionado por \tabhead{HealthData} \citep{healthdata}. \\
 
 Para todos los productos cosméticos vendidos en California, la Ley de Cosméticos Seguros de California requiere que el fabricante, empacador y/o distribuidor nombrado en la etiqueta del producto proporcione una lista al Programa de Cosméticos Seguros de California \textit{(California Safe Cosmetics Program (CSCP))} perteneciente al Departamento de Salud Pública de California \textit{(California Department of Public Health (CDPH))} de todos los productos cosméticos que contengan cualquier ingrediente conocido o sospechoso de causar cáncer, defectos de nacimiento u otros daños al desarrollo o reproductivos. El CSCP mantiene una lista de ingredientes ``reportables''. Las compañías con ingredientes reportables en sus productos deben enviar información al Programa de Cosméticos Seguros de California si la compañía:
@@ -35,7 +38,7 @@ El dataset proporcionado por el CSCP es un dataset en formato CSV con un histór
  \item 22 columnas (características).
 \end{itemize}
 
-En la Tabla \ref{features} se describen cada una de las características. La agrupación de las características \code{CDPHId}, \code{CSFId}, \code{SubCategoryId} y \code{ChemicalId} forma la clave primaria de este dataset.
+En la Tabla \ref{tab:features} se describen cada una de las características. La agrupación de las características \code{CDPHId}, \code{CSFId}, \code{SubCategoryId} y \code{ChemicalId} forma la clave primaria de este dataset.
 
 \begin{table}[]
 \begin{tabular}{@{}lll@{}}
@@ -65,26 +68,80 @@ Nombre                 & Formato & Definición \\ \midrule
 \code{ChemicalCount}           & Número & Número total de productos químicos \\ & &  reportados en ese cosmético \\
 \bottomrule
 \end{tabular}
+\centering
 \caption{Descripción de las características del dataset.}
-\label{features}
+\label{tab:features}
 \end{table}
+
+
+
+
+
+
 
 
 \newpage
 %------------------------------------------------    
 \subsection{Selección de características importantes}
 
+No todas las características descritas en la Tabla \ref{tab:features} son necesarias para aplicar las técnicas descritas en la sección \ref{sec:methods} ya que algunas de ellas son informativas o no son relevantes a la hora de aplicar dichas técnicas. \\
+
+Se van a tener en cuenta todas las características de formato Fecha, exceptuando las características \code{DiscontinuedDate} y \code{ChemicalDateRemoved}, ya que solamente interesan aquellos productos que no hayan sido eliminados. Además, se van a utilizar las características \code{SubCategoryId} y \code{CASId}, pues son los identificadores de los cosméticos y los productos químicos, respectivamente. Se utiliza \code{SubCategoryId} en vez de \code{PrimaryCategoryId} debido a que la primera es más específica que la segunda y a partir de la primera se puede sacar la segunda (pues está contenido en ella). Y por supuesto, \code{ChemicalCount}, que indica la cantidad de productos químicos. \\
+
+Así pues, la Tabla \ref{tab:features-selection} muestra las características que se van a tener en cuenta:
+
+\begin{table}[!th]
+\begin{tabular}{@{}l@{}}
+\toprule
+Nombre                         \\ \midrule
+\code{SubCategoryId}           \\
+\code{CASId}                   \\
+\code{InitialDateReported}     \\
+\code{MostRecentDateReported}  \\ 
+\code{ChemicalCreatedAt}       \\
+\code{ChemicalUpdatedAt}       \\ 
+\code{ChemicalCount}           \\
+\bottomrule
+\end{tabular}
+\centering
+\caption{Selección de características importantes.}
+\label{tab:features-selection}
+\end{table}
 
 
 
 
-\newpage
+
+
+
 
 %------------------------------------------------    
 \section{Métodos}
+\label{sec:methods}
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 %------------------------------------------------    
-\subsection{Subsection 1}
+\subsection{Clustering}
+\label{sec:methods:subsec:clustering}
+
+
+
+
+
+
+
+%------------------------------------------------    
+\subsection{Forecasting}
+\label{sec:methods:subsec:forecasting}
