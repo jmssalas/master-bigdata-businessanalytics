@@ -84,13 +84,13 @@ La Figura \ref{fig:clusters-distribution} muestra la distribución de los cluste
 Tras aplicar el clustering, se van a calcular ciertas métricas sobre los clusters obtenidos para ofrecer los resultados del clustering de manera más precisa. Las métricas que han sido utilizadas son las siguientes:
 
 \begin{itemize}
- \item \code{Average Within}. Mide la distancia media dentro de las observaciones de cada cluster (distancia intra-cluster). Viene definido por la ecuación \ref{eq:average-within}, siendo $K$ el número de clusters, $C_i$ el conjunto de elementos del cluster $i$ y $centroid_i$ el centroide del cluster $i$: 
+ \item \code{Average Within} \citep{metrics}. Mide la distancia media dentro de las observaciones de cada cluster (distancia intra-cluster). Viene definido por la ecuación \ref{eq:average-within}, siendo $K$ el número de clusters, $C_i$ el conjunto de elementos del cluster $i$ y $centroid_i$ el centroide del cluster $i$: 
  \begin{equation}
   SSE = \sum\limits^{K}_{i=1} \sum\limits_{x \in C_i} dist(centroid_i, x)^2
   \label{eq:average-within}
  \end{equation}
  
- \item \code{Dunn Index}. Define el ratio entre la distancia mínima inter-cluster y la máxima distancia intra-cluster. Viene definido por la ecuación \ref{eq:dunn-index}, siendo $C$ el conjunto de todos los clusters.
+ \item \code{Dunn Index} \citep{metrics}. Define el ratio entre la distancia mínima inter-cluster y la máxima distancia intra-cluster. Viene definido por la ecuación \ref{eq:dunn-index}, siendo $C$ el conjunto de todos los clusters.
   \begin{equation}
   D(C) = \frac{\min\limits_{C_k, C_l \in C, C_k \neq C_l} (\min\limits_{i,j \in C_k, C_l} dist(i, j))}{\max\limits_{C_m \in C} diam(C_m)}
   \label{eq:dunn-index}
