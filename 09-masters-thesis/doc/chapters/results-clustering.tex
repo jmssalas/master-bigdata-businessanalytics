@@ -2,7 +2,7 @@
 %------------------------------------------------   
 \section{Clustering}
 
-Todo esto se encuentra implementado en el notebook \code{src/clustering.ipynb} \citep{master}.
+Todo esto se encuentra implementado en el notebook \code{src/clustering-and-data-analysis.ipynb} \citep{master}.
 
 
 %------------------------------------------------   
@@ -54,7 +54,7 @@ Nombre                                \\ \midrule
 
 Una vez aplicado el preprocesamiento, tenemos el dataset preparado para poder aplicar el algoritmo de clustering K-Means \citep{scikit-learn}. Sin embargo, este algoritmo necesita que se le proporcione el número de clusters en los que dividir el dataset. Con las características que presenta el dataset no se puede saber el número óptimo de clusters sin aplicar alguna técnica que nos proporcione este número. \\
 
-Para la obtención del número óptimo de clusters, se han utilizado los métodos de la Silueta \textit{(Silhouette Method \citep{scikit-learn})} y del Codo \textit{(Elbow Method \citep{elbow})}. En la Figura \ref{fig:silhouette-elbow-methods} se muestran las dos gráficas de la aplicación de los métodos anteriores al dataset. Estas gráficas nos indican que el número óptimo de clusters en los que se divide el dataset es 3. \\
+Para la obtención del número óptimo de clusters, se han utilizado los métodos de la Silueta \textit{(Silhouette Method)} \citep{scikit-learn} y del Codo \textit{(Elbow Method)} \citep{elbow}. En la Figura \ref{fig:silhouette-elbow-methods} se muestran las dos gráficas de la aplicación de los métodos anteriores al dataset. Estas gráficas nos indican que el número óptimo de clusters en los que se divide el dataset es 3. \\
 
 Una vez obtenido el número óptimo de clusters, se puede aplicar el algoritmo K-Means indicándole que el número de clusters es 3. Las Tablas \ref{tab:cluster0}, \ref{tab:cluster1}, \ref{tab:cluster1-1} y \ref{tab:cluster2} muestran la distribución de los productos químicos en los tres clusters tras aplicar el algoritmo. \\
 

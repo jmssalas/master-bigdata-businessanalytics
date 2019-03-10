@@ -2,7 +2,7 @@
 %------------------------------------------------   
 \section{Data Analysis}
 
-
+El Análisis Exploratorio de Datos \textit{(Exploratory Data Analysis (EDA))} \citep{eda} es muy importante para poder obtener información y conocimiento acerca del dataset. Así pues, en esta sección se van a aplicar distintas técnicas para poder obtener qué productos químicos son los más frecuentes, qué cosméticos son los que presentan mayor número de productos químicos, cómo se distribuyen los datos en función de ciertos campos y cómo se distribuyen por cluster, la cantidad de productos químicos totales. Todo esto se encuentra implementado en el notebook \code{src/clustering-and-data-analysis.ipynb} \citep{master}.
 
 
 
@@ -96,6 +96,8 @@ El nombre de cada uno de los cosméticos es:
  \item \code{49 - Face Powders}.
 \end{itemize}
 
+
+\newpage
 \begin{figure}[!th]
 \includegraphics[scale=0.5]{figures/histogram-subcategoryid-per-cluster-without656}
 \centering
@@ -113,6 +115,54 @@ El nombre de cada uno de los cosméticos es:
 
 
 
+\newpage
+%------------------------------------------------   
+\subsection{Distribución del dataset}
+\label{sec:dataset-distribution}
+
+En la Figura \ref{fig:splom-data-aggregated} se muestra la distribución del dataset en función de los campos \code{CasId}, \code{InitialDateReported\_Year}, \code{MostRecentDateReported\_Year} y \code{SubCategoryId}, diferenciando por cluster, en el que se puede observar que en los primeros años (2009 y 2010) fue cuando se reportaron la gran mayoría de los productos químicos y que en los años siguientes han ido reportándose de una manera muy equilibrada.
+
+\begin{figure}[!th]
+\includegraphics[scale=0.5]{figures/splom-data-aggregated}
+\centering
+\caption{Distribución del dataset en función de los campos \code{InitialDateReported\_Year}, \code{MostRecentDateReported\_Year}, \code{SubCategoryId} y \code{CasId}.}
+\label{fig:splom-data-aggregated}
+\end{figure}
+
+
+
+
+\newpage
+%------------------------------------------------   
+\subsection{Distribución de la cantidad de productos químicos por cluster}
+\label{sec:chemicals-per-cluster}
+
+Hasta ahora se han estudiado la frecuencia en la que aparecen los productos químicos y los cosméticos en el dataset. En este punto, se va a estudiar la distribución de la cantidad de productos químicos en cada uno de los clusters, esto es: la suma del campo \code{ChemicalCount} distribuido en cada uno de los clusters. La Figura \ref{fig:pie-sum-chemicalcount} muestra esta distribución.
+
+
+\begin{figure}[!th]
+\includegraphics[scale=0.46]{figures/pie-sum-chemicalcount}
+\centering
+\caption{Distribución de la suma del campo \code{ChemicalCount} por cada cluster.}
+\label{fig:pie-sum-chemicalcount}
+\end{figure}
+
+Al igual que pasaba en la sección \ref{sec:subcategoryid-histograms}, el alto porcentaje del Cluster 0 se debe al \code{CasId} 656. Por lo que, la Figura \ref{fig:pie-sum-chemicalcount-without656} muestra la misma distribución eliminando el \code{CasId} 656 del dataset. Donde se puede observar que más del 50\% de los productos químicos se encuentran en el Cluster 1.
+
+\begin{figure}[!th]
+\includegraphics[scale=0.46]{figures/pie-sum-chemicalcount-without656}
+\centering
+\caption{Distribución de la suma del campo \code{ChemicalCount} por cada cluster, sin el \code{CasId} 656.}
+\label{fig:pie-sum-chemicalcount-without656}
+\end{figure}
+
+
+
+
+
+
+
+
 
 
 
@@ -123,29 +173,6 @@ El nombre de cada uno de los cosméticos es:
 
 
 \newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
