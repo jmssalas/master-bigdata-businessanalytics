@@ -8,12 +8,13 @@
 
 %------------------------------------------------   
 \subsection{Obtención de los productos químicos más frecuentes en los cosméticos}
+\label{sec:casid-histograms}
 
 La obtención de los productos químicos más frecuentes en los cosméticos se va a realizar realizando histogramas sobre el campo \code{CasId} del dataset. La Figura \ref{fig:histogram-casid-basic} muestra el histograma sobre todo el dataset, donde se puede observar que entre los valores 600 y 700 hay un gran volumen. \\
 
 Concretamente, este volumen se encuentra entre los valores 656 and 658. La Figura \ref{fig:histogram-casid-656-658} muestra el histograma entre dichos valores, donde se puede observar que el volumen se encuentra en el producto químico con \code{CasId} 656, cuyo nombre es: 
 \begin{itemize}
- \item \code{656 - Titanium dioxide}
+ \item \code{656 - Titanium dioxide}.
 \end{itemize}
 
 y pertenece al Cluster 0. 
@@ -43,19 +44,19 @@ La Figura \ref{fig:histogram-casid-without656} muestra el histograma sobre el ca
 \begin{figure}[!th]
 \includegraphics[scale=0.5]{figures/histogram-casid-without656}
 \centering
-\caption{Histograma sobre el campo \code{CasId} sin el \code{CasId} 656.}
+\caption{Histograma sobre el campo \code{CasId} sin el \code{CasId} 656, diferenciando por cluster.}
 \label{fig:histogram-casid-without656}
 \end{figure}
 
-Concretamente, este volumen se encuentra entre los valores 773 y 776. La Figura \ref{fig:histogram-casid-773-776} muestra el histograma entre dichos valores, donde se puede apreciar que el \code{CasId} 773 tiene mayor volumen. El nombre de cada uno de los productos químicos es:
+Concretamente, este volumen se encuentra entre los valores 773 y 776. La Figura \ref{fig:histogram-casid-773-776} muestra el histograma de dichos valores, donde se puede apreciar que el \code{CasId} 773 tiene mayor volumen. El nombre de cada uno de los productos químicos es:
 
 \begin{itemize}
- \item \code{773 - Retinol/retinyl esters, when in daily dosages in excess of 10,000 IU, or 3,000 retinol equivalents}
- \item \code{776 - Silica, crystalline (airborne particles of respirable size)}
+ \item \code{773 - Retinol/retinyl esters, when in daily dosages in excess of 10,000 IU, or 3,000 retinol equivalents}.
+ \item \code{776 - Silica, crystalline (airborne particles of respirable size)}.
 \end{itemize}
 
 \begin{figure}[!th]
-\includegraphics[scale=0.5]{figures/histogram-casid-773-776}
+\includegraphics[scale=0.49]{figures/histogram-casid-773-776}
 \centering
 \caption{Histograma de los valores 773 y 776 del campo \code{CasId}.}
 \label{fig:histogram-casid-773-776}
@@ -64,16 +65,50 @@ Concretamente, este volumen se encuentra entre los valores 773 y 776. La Figura 
 
 
 
-\newpage
 
+
+
+
+\newpage
 %------------------------------------------------   
 \subsection{Obtención de los cosméticos con mayor número de productos químicos}
+\label{sec:subcategoryid-histograms}
 
+Con la misma filosofía que en la sección \ref{sec:casid-histograms}, se van a realizar histogramas sobre el campo \code{SubCategoryId} para obtener los cosméticos que presentan mayor número de productos químicos. La Figura \ref{fig:histogram-subcategoryid-per-cluster} muestra el histograma sobre el campo \code{SubCategoryId} de todo el dataset diferenciando por cluster.
 
+\begin{figure}[!th]
+\includegraphics[scale=0.5]{figures/histogram-subcategoryid-per-cluster}
+\centering
+\caption{Histograma sobre el campo \code{SubCategoryId} diferenciando por cluster.}
+\label{fig:histogram-subcategoryid-per-cluster}
+\end{figure}
 
+Como se puede observar, hay un gran volumen de registros que pertenecen al Cluster 0, esto es debido al volumen que presenta el \code{CasId} 656 en todo el dataset. Por lo tanto, para poder hacer un estudio más detallado, se va a eliminar el \code{CasId} 656. Así pues, la Figura \ref{fig:histogram-subcategoryid-per-cluster-without656} muestra el mismo histograma que en la Figura \ref{fig:histogram-subcategoryid-per-cluster} pero sin el \code{CasId} 656. \\
 
+Al igual que ocurrió con el campo \code{CasId}, se puede observar que entre los valores 40 y 50 del campo \code{SubCategoryId} se encuentra un volumen superior al resto. Concretamente, se encuentra entre los valores 45, 46, 48 y 49. La Figura \ref{fig:histogram-subcategoryid-45-49} muestra el histograma de dichos valores, donde se puede apreciar que el valor \code{SubCategoryId} 48 es el que tiene un volumen mayor. Además, también se puede observar que la gran mayoría de los registros pertenecen al Cluster 1. \\
 
+El nombre de cada uno de los cosméticos es:
 
+\begin{itemize}
+ \item \code{45 - Blushes}.
+ \item \code{46 - Eyeliner/Eyebrow Pencils}.
+ \item \code{48 - Eye Shadow}.
+ \item \code{49 - Face Powders}.
+\end{itemize}
+
+\begin{figure}[!th]
+\includegraphics[scale=0.5]{figures/histogram-subcategoryid-per-cluster-without656}
+\centering
+\caption{Histograma sobre el campo \code{SubCategoryId} diferenciando por cluster, sin el \code{CasId} 656.}
+\label{fig:histogram-subcategoryid-per-cluster-without656}
+\end{figure}
+
+\begin{figure}[!th]
+\includegraphics[scale=0.5]{figures/histogram-subcategoryid-45-49}
+\centering
+\caption{Histograma de los valores 45, 46, 48 y 49 del campo \code{SubCategoryId} diferenciando por cluster, sin el \code{CasId} 656.}
+\label{fig:histogram-subcategoryid-45-49}
+\end{figure}
 
 
 
