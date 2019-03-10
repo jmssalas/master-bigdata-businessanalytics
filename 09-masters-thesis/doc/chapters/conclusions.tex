@@ -3,32 +3,82 @@
 \chapter{Conclusiones} % Main chapter title
 \label{chap:conclusions} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
 
-\section{Main Section 1}
+%------------------------------------------------   
+\section{Conclusiones del trabajo}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+La realización de este Trabajo Fin de Master ha dado como resultado la consecución de los objetivos marcados en la sección \ref{sec:goals}:
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+\begin{itemize}
+ \item Se ha implementado un modelo de clustering que clasifica los productos químicos presentes en los cosméticos en 3 grandes grupos: Cluster 0, Cluster 1 y Cluster 2.
+ 
+ \item Se ha obtenido un modelo de forecasting capaz de predecir la cantidad de productos químicos presentes en los cosméticos en un periodo de una semana.
+ 
+ \item Se han encontrado los productos químicos más frecuentes en los cosméticos:
+\begin{itemize}
+  \item \code{656 - Titanium dioxide}.
+  \item \code{773 - Retinol/retinyl esters, when in daily dosages in \\ excess of 10,000 IU, or 3,000 retinol equivalents}.
+  \item \code{776 - Silica, crystalline (airborne particles of \\ respirable size)}.
+ \end{itemize}
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+ siendo \code{656 - Titanium dioxide} el más frecuente en todo el dataset.
+ 
+ \item Se han encontrado los cosméticos con mayor presencia de productos químicos (sin tener en cuenta el \code{656 - Titanium dioxide}):
+ \begin{itemize}
+  \item \code{45 - Blushes}.
+  \item \code{46 - Eyeliner/Eyebrow Pencils}.
+  \item \code{48 - Eye Shadow}.
+  \item \code{49 - Face Powders}.
+ \end{itemize}
+ 
+ siendo \code{48 - Eye Shadow} el cosmético con mayor presencia de productos químicos entre ellos.
+ 
+ \item Y se ha encontrado que más del 80\% de la cantidad de productos químicos se encuentran dentro del Cluster 0, teniendo en cuenta que en este cluster se encuentra el \code{656 - Titanium dioxide}. Sin este producto químico, más del 50\% de la cantidad de productos químicos se encuentran dentro del Cluster 1. 
+\end{itemize}
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
 
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
 
-\section{Main Section 2}
+\newpage
+%------------------------------------------------   
+\section{Conclusiones personales}
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+Dada mi inquietud por poder aplicar la informática al campo de la salud, sabía que mi Trabajo Fin de Máster iba a ser una de esas aplicaciones. Sin embargo, no sabía sobre qué tema enfocarlo. Hasta que mi tutor Juan Manuel me descubrió la plataforma HealthData \citep{healthdata} y pude investigar en la inmensidad de datasets públicos en el ámbito de la salud. \\
+
+De todos los datasets que hay en esta plataforma, decidí escoger el dataset \tabhead{Chemicals in Cosmetics} \citep{dataset} porque almacena información muy importante en una actualidad donde el consumo de cosméticos es increíblemente alto, donde algunos cosméticos son casi imprescindibles hoy día. Y el hecho de que los cosméticos contengan productos químicos dañinos para las personas, conlleva a estudiarlos muy a fondo. \\
+
+Además, este dataset me suponía tres retos, todos ligados a la aplicación de técnicas descritas en el capítulo \ref{chap:results}: 
+
+\begin{itemize}
+ \item ¿Cómo obtengo el dataset si se va actualizando cada cierto tiempo?
+ \item ¿Cómo aplico el clustering sobre un dataset tan grande?
+ \item ¿Cómo se aplican las técnicas de forecasting? y ¿cómo aplico el forecasting sobre un dataset incremental?
+\end{itemize}
+
+La realización de este Trabajo Fin de Máster es el fruto de la consecución de los tres retos anteriores. Tal vez este trabajo no llegue a ser nada más que un simple Trabajo Fin de Máster, que se quedará en el recuerdo, pero yo me siento orgulloso de volver a poner mi granito de arena sobre la aplicación de la informática al campo de la salud.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

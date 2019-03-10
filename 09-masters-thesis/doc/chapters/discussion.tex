@@ -7,7 +7,7 @@
 %------------------------------------------------   
 \section{Introducción}
 
-
+En este capítulo se analizarán los resultados obtenidos en el capítulo \ref{chap:results} y se discutirá acerca de los modelos obtenidos. Primero, se analizarán los resultados obtenidos tras la aplicación del clustering y, posteriormente, los obtenidos tras la aplicación del forecasting.
 
 
 
@@ -17,27 +17,17 @@
 %------------------------------------------------   
 \section{Clustering}
 
+La aplicación del algoritmo de clustering K-Means \citep{scikit-learn} sobre el dataset \citep{dataset} que se ha realizado en la sección \ref{sec:results-clustering} ha proporcionado la siguiente información:
 
+\begin{itemize}
+ \item El dataset se divide en 3 clusters, cuya distribución se muestra en la Figura \ref{fig:clusters-distribution} de manera gráfica y en la Tabla \ref{tab:clusters-distribution} de manera numérica.
+ 
+ \item La diferencia de volumen entre el Cluster 0 y el resto de clusters es debido a que en el Cluster 0 se encuentra el \code{CasId} 656, que es el producto químico más frecuente en todo el dataset, como se comenta en la sección \ref{sec:results-data-analysis}.
 
+ \item Las métricas obtenidas sobre los clusters que muestra la Tabla \ref{tab:metrics} indican que los clusters están muy juntos (métrica \code{Dunn Index}) y que el tamaño de los mismos es muy grande (métrica \code{Average Within}), lo que concuerda con la distribución mostrada en la Figura \ref{fig:clusters-distribution}.
+\end{itemize}
 
-
-
-
-
-
-
-
-
-%------------------------------------------------   
-\section{Data Analysis}
-
-
-
-
-
-
-
-
+Con esta información, se puede concluir que la clusterización obtenida es la óptima para este dataset.
 
 
 
@@ -46,6 +36,34 @@
 %------------------------------------------------   
 \section{Forecasting}
 
+La aplicación del algoritmo de forecasting ARIMA \citep{arima} sobre el dataset \citep{dataset} que se ha realizado en la sección \ref{sec:results-forecasting} ha proporcionado la siguiente información:
+
+\begin{itemize}
+ \item Se han obtenido cuatro modelos ARIMA para cuatro agrupaciones distintas del dataset: agrupando por mes (\code{by\_month}), agrupando cada 15 días (\code{by\_each\_15days}), agrupando cada 7 días (\code{by\_each\_7days}) y sin agrupación (\code{alldataset}). La Tabla \ref{tab:ts-model-comparation} resume los valores obtenidos por cada uno de los modelos.
+ 
+\begin{table}[!th]
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+Modelo                  & \code{(p,d,q)} & \code{dataset} & $RMSE_{dataset}$ & \code{validation} & $RMSE_{validation}$ \\ \midrule
+\code{by\_month}        & (1,1,0)        & 110                   & 18.822           & 6                        & 15.212 \\
+\code{by\_each\_15days} & (1,1,0)        & 223                   & 15.903           & 12                       & 19.856 \\
+\code{by\_each\_7days}  & (1,1,0)        & 467                   & 15.064           & 25                       & 17.986 \\
+\code{alldataset}       & (1,1,0)        & 1.749                 & 12.905           & 114                      & 23.571 \\
+\bottomrule
+\end{tabular}
+\centering
+\caption{Resumen de los valores obtenidos por los cuatro modelos ARIMA.}
+\label{tab:ts-model-comparation}
+\end{table}
+
+
+ \item Como se puede observar, conforme el tamaño del dataset de entrenamiento \code{dataset} aumenta, el RMSE disminuye, mientras que conforme el tamaño del dataset de validación \code{validation} aumenta, el RMSE aumenta, exceptuando en el dataset obtenido agrupando cada 7 días (\code{by\_each\_7days}).
+ 
+ \item El modelo obtenido a partir de todo el dataset (\code{alldataset}) tiene un RMSE muy pequeño en comparación con el tamaño del dataset, por lo que el mejor modelo a aplicar sería este. Sin embargo, poder predecir la cantidad de productos químicos que habrá en un día en concreto no es tan relevante como poder predecir la cantidad de productos químicos que habrá cada semana o cada dos semanas.
+ 
+ \item Así pues, con estas características, el modelo que mejor se ajusta es el modelo a partir de la agrupación del dataset cada 7 días (\code{by\_each\_7days}).
+
+\end{itemize}
 
 
 
