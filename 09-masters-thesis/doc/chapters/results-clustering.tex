@@ -58,7 +58,7 @@ Para la obtención del número óptimo de clusters, se han utilizado los método
 
 Una vez obtenido el número óptimo de clusters, se puede aplicar el algoritmo K-Means indicándole que el número de clusters es 3. Las Tablas \ref{tab:cluster0}, \ref{tab:cluster1}, \ref{tab:cluster1-1} y \ref{tab:cluster2} muestran la distribución de los productos químicos en los tres clusters tras aplicar el algoritmo. \\
 
-La Figura \ref{fig:clusters-distribution} muestra la distribución de los cluster obtenidos según la relación entre los productos químicos \code{CasId} y los cosméticos \code{SubCategoryId}.
+La Figura \ref{fig:clusters-distribution} muestra la distribución de los cluster obtenidos según la relación entre los productos químicos \code{CasId} y los cosméticos \code{SubCategoryId}. Mientras que la Tabla \ref{tab:clusters-distribution} muestra la distribución de los clusters de manera numérica.
 
 \newpage
 \begin{figure}[!th]
@@ -69,12 +69,23 @@ La Figura \ref{fig:clusters-distribution} muestra la distribución de los cluste
 \end{figure}
 
 \begin{figure}[!th]
-\includegraphics[scale=0.55]{figures/clusters-distribution}
+\includegraphics[scale=0.5]{figures/clusters-distribution}
 \centering
 \caption{Distribución de los clusters según la relación entre los productos químicos \code{CasId} y los cosméticos \code{SubCategoryId}.}
 \label{fig:clusters-distribution}
 \end{figure}
 
+\begin{table}[!th]
+\begin{tabular}{@{}ccc@{}}
+\toprule
+Cluster 0 & Cluster 1 & Cluster 2 \\ \midrule
+$5532$ & $1476$ & $479$ \\
+\bottomrule
+\end{tabular}
+\centering
+\caption{Distribución de los clusters según el número de registros de cada cluster.}
+\label{tab:clusters-distribution}
+\end{table}
 
 
 
