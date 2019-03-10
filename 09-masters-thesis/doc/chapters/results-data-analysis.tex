@@ -19,7 +19,6 @@ Concretamente, este volumen se encuentra entre los valores 656 and 658. La Figur
 
 y pertenece al Cluster 0. 
 
-\newpage
 \begin{figure}[!th]
 \includegraphics[scale=0.5]{figures/histogram-casid-basic}
 \centering
@@ -55,6 +54,8 @@ Concretamente, este volumen se encuentra entre los valores 773 y 776. La Figura 
  \item \code{776 - Silica, crystalline (airborne particles of respirable size)}.
 \end{itemize}
 
+
+\newpage
 \begin{figure}[!th]
 \includegraphics[scale=0.49]{figures/histogram-casid-773-776}
 \centering
@@ -69,7 +70,7 @@ Concretamente, este volumen se encuentra entre los valores 773 y 776. La Figura 
 
 
 
-\newpage
+
 %------------------------------------------------   
 \subsection{Obtención de los cosméticos con mayor número de productos químicos}
 \label{sec:subcategoryid-histograms}
@@ -83,7 +84,15 @@ Con la misma filosofía que en la sección \ref{sec:casid-histograms}, se van a 
 \label{fig:histogram-subcategoryid-per-cluster}
 \end{figure}
 
-Como se puede observar, hay un gran volumen de registros que pertenecen al Cluster 0, esto es debido al volumen que presenta el \code{CasId} 656 en todo el dataset. Por lo tanto, para poder hacer un estudio más detallado, se va a eliminar el \code{CasId} 656. Así pues, la Figura \ref{fig:histogram-subcategoryid-per-cluster-without656} muestra el mismo histograma que en la Figura \ref{fig:histogram-subcategoryid-per-cluster} pero sin el \code{CasId} 656. \\
+
+Como se puede observar, hay un gran volumen de registros que pertenecen al Cluster 0, esto es debido al volumen que presenta el \code{CasId} 656 en todo el dataset. Por lo tanto, para poder hacer un estudio más detallado, se va a eliminar el \code{CasId} 656. Así pues, la Figura \ref{fig:histogram-subcategoryid-per-cluster-without656} muestra el mismo histograma que en la Figura \ref{fig:histogram-subcategoryid-per-cluster} pero sin el \code{CasId} 656. 
+
+\begin{figure}[!th]
+\includegraphics[scale=0.5]{figures/histogram-subcategoryid-per-cluster-without656}
+\centering
+\caption{Histograma sobre el campo \code{SubCategoryId} diferenciando por cluster, sin el \code{CasId} 656.}
+\label{fig:histogram-subcategoryid-per-cluster-without656}
+\end{figure}
 
 Al igual que ocurrió con el campo \code{CasId}, se puede observar que entre los valores 40 y 50 del campo \code{SubCategoryId} se encuentra un volumen superior al resto. Concretamente, se encuentra entre los valores 45, 46, 48 y 49. La Figura \ref{fig:histogram-subcategoryid-45-49} muestra el histograma de dichos valores, donde se puede apreciar que el valor \code{SubCategoryId} 48 es el que tiene un volumen mayor. Además, también se puede observar que la gran mayoría de los registros pertenecen al Cluster 1. \\
 
@@ -99,19 +108,11 @@ El nombre de cada uno de los cosméticos es:
 
 \newpage
 \begin{figure}[!th]
-\includegraphics[scale=0.5]{figures/histogram-subcategoryid-per-cluster-without656}
-\centering
-\caption{Histograma sobre el campo \code{SubCategoryId} diferenciando por cluster, sin el \code{CasId} 656.}
-\label{fig:histogram-subcategoryid-per-cluster-without656}
-\end{figure}
-
-\begin{figure}[!th]
 \includegraphics[scale=0.5]{figures/histogram-subcategoryid-45-49}
 \centering
 \caption{Histograma de los valores 45, 46, 48 y 49 del campo \code{SubCategoryId} diferenciando por cluster, sin el \code{CasId} 656.}
 \label{fig:histogram-subcategoryid-45-49}
 \end{figure}
-
 
 
 
