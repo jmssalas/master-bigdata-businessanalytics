@@ -1,3 +1,74 @@
 
 %------------------------------------------------   
 \section{Forecasting}
+
+
+
+
+
+%------------------------------------------------   
+\subsection{Preprocesamiento}
+
+Antes de poder aplicar el algoritmo de forecasting ARIMA \citep{arima}, el dataset debe ser preprocesado, al igual que se realizó con el clustering en la sección \ref{sec:clustering-preprocessing}. Sin embargo, no se ha realizado el mismo preprocesamiento. A continuación se detallan los pasos realizados en este preprocesamiento:
+
+\begin{itemize}
+ \item \textbf{Rellenar valores nulos}. En el dataset se han encontrado tres tipos de valores nulos: 
+ \begin{itemize}
+  \item \textbf{Valores de formato fecha}. Han sido rellenados con el valor \code{01/01/1990}.
+  \item \textbf{Valores de formato texto}. Han sido rellenados con el valor de la cadena vacía.
+  \item \textbf{Valores de formato texto asociados a identificadores}. Han sido rellenados con el valor \code{-1}.
+ \end{itemize}
+ 
+ \item \textbf{Eliminar de los registros} con valor distinto de \code{01/01/1990} en los campos \\ \code{DiscontinuedDate} y \code{ChemicalDateRemoved}, pues solo se precisan de aquellos registros de cosméticos que tengan productos químicos y no hayan sido retirados del mercado.
+
+ \item \textbf{Agrupar por el campo} \code{InitialDateReported} sumando los valores del campo \\ \code{ChemicalCount}. Ya que el objetivo de la aplicación de forecasting es poder obtener una predicción de la cantidad de productos químicos que serán reportados en el futuro.
+\end{itemize}
+
+Tras aplicar este preprocesamiento nos queda un dataset con 1.863 registros y 2 características: \code{InitialDateReported} y \code{ChemicalCount}.
+
+
+
+
+%------------------------------------------------   
+\subsection{Obtención de los datasets de entrenamiento y validación}
+
+
+Para poder realizar el forecasting, se necesita tener datos de entrenamiento y datos de validación (en adelante, \code{dataset} y \code{validation}, respectivamente). La obtención de estos datasets está ligada a que el dataset \citep{dataset} es incremental y se tienen almacenados dos versiones del dataset, como se ha comentado en la sección \ref{sec:data-downloading}. \\ 
+
+Así, se disponen de las siguientes versiones del dataset:
+
+\begin{itemize}
+ \item Carpeta \code{src/data/} \citep{master}, donde se almacena la versión más reciente del dataset.
+ \item Carpeta \code{src/data\_backup/} \citep{master}, donde se almacena la versión anterior del dataset.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+%------------------------------------------------   
+\subsection{Aplicación del algoritmo ARIMA}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

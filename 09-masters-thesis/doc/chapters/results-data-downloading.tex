@@ -1,11 +1,10 @@
 
 %------------------------------------------------   
 \section{Obtención del dataset}
+\label{sec:data-downloading}
 
-El dataset empleado para este trabajo es un dataset incremental actualizado cada 3 o 4 días, por lo que solo sería necesario descargar el dataset cuando haya sido actualizado. Sin embargo, el volumen de registros añadidos en cada actualización no son significativos para la aplicación de las técnicas de clustering y forecasting, de tal manera que la descarga de los datos se realiza si han pasado, como mínimo, 15 días desde la última descarga del dataset (el número de días es un parámetro configurable). \\
+El dataset empleado para este trabajo es un dataset incremental actualizado cada 3 o 4 días, por lo que solo sería necesario descargar el dataset cuando haya sido actualizado. Sin embargo, el volumen de registros añadidos en cada actualización no son significativos para la aplicación de las técnicas de clustering y forecasting, de tal manera que la descarga de los datos se realiza si han pasado, como mínimo, 15 días desde la última descarga del dataset (el número de días es un parámetro configurable). Así, cada vez que se descarga el dataset, el volumen de registros nuevos que sí es significativo para la aplicación de las técnicas de clustering y forecasting. \\
 
-Así, cada vez que se descarga el dataset, el volumen de registros nuevos que sí es significativo para la aplicación de las técnicas de clustering y forecasting. \\
-
-El dataset en formato CSV se almacena dentro de la carpeta \code{data/} mientras que la información que viene asociada \citep{dataset} se almacena en la carpeta \code{data/info/}. Por último, junto al dataset se almacena el fichero \code{local\_data\_date} con la marca de tiempo en el que se descargó el dataset. \\
+El dataset en formato CSV se almacena dentro de la carpeta \code{src/data/} mientras que la información que viene asociada \citep{dataset} se almacena en la carpeta \\ \code{src/data/info/}. Por último, junto al dataset se almacena el fichero \code{local\_data\_date} con la marca de tiempo en el que se descargó el dataset. Cada vez que se descarga el dataset, el antiguo dataset (y su información asociada) queda almacenado en la carpeta \\ \code{src/data\_backup/}. \\
 
 Todo esto se encuentra implementado en el notebook \code{src/download\_data.ipynb} \citep{master}.
